@@ -5,8 +5,9 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {Login} from './pages/Login';
 import {Inicio} from './pages/Inicio'
-import {getProfile} from './redux/app'
-
+import {Activos} from './pages/Activos';
+import {getProfile,getfullSession} from './redux/app'
+import { Avatar } from 'react-native-elements';
 const Stack = createStackNavigator();
 const MyTheme = {
     headerStyle: {
@@ -22,13 +23,19 @@ const MyTheme = {
 export const Main = ()=>{
     const auth = useSelector((store)=>store.app.session.session_token)
     const server = useSelector((store)=>store.app.session.server)
+    const {profiles,session,fullsession} = useSelector((store)=>store.app)
     const [isAuth,setAuth] = useState(false)
     const dispatch = useDispatch()
     useEffect(()=>{
         if(auth!==''){
             setAuth(true)
             dispatch(getProfile(server,auth))
+            dispatch(getfullSession(server,auth))
+            
+            
         }
+
+        
     })
     return(
         <NavigationContainer >
@@ -40,7 +47,21 @@ export const Main = ()=>{
                     </>
                 ):(
                     <>
-                    <Stack.Screen name='Inicio'  component={Inicio} options={MyTheme}></Stack.Screen>
+                    <Stack.Screen name='Inicio'  component={Inicio} options={{
+                         headerStyle: {
+                            backgroundColor: '#9EC9F0'
+                        },
+                        headerTintColor: '#000000',
+                        headerTitleStyle: {
+                            fontWeight: 'bold',
+                            fontSize: 20,
+                        },
+                            headerRight: () => (
+                                <Avatar rounded icon={{name: 'user', type: 'font-awesome'}}   overlayContainerStyle={{backgroundColor: 'black'}}
+                                />
+                            )
+                        }}></Stack.Screen>
+                        <Stack.Screen name="Activos" component={Activos}></Stack.Screen>
                     </> 
                 )
             }

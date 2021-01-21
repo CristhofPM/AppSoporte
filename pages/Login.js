@@ -9,12 +9,10 @@ export const Login = ( ) => {
     const [user, setUser] = useState(null);
     const [pass, setPass] = useState(null);
     const [server, setServer] = useState(null);
-    const [load, setLoad] = useState(false);
+    const [load, setLoad] = useState(null);
     const msj = useSelector((store) => store.app.error);
     const session_token = useSelector((store) => store.app.session.session_token)
-    const auth = useSelector((store) => store.app.session.auth)
     const dispatch = useDispatch()
-    const navigation = useNavigation()
 
     useEffect(() => {
         if (msj) {
