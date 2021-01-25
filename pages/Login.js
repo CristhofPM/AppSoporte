@@ -6,9 +6,9 @@ import RNPickerSelect from 'react-native-picker-select';
 import { useNavigation } from '@react-navigation/native'
 
 export const Login = ( ) => {
-    const [user, setUser] = useState(null);
-    const [pass, setPass] = useState(null);
-    const [server, setServer] = useState(null);
+    const [user, setUser] = useState('');
+    const [pass, setPass] = useState('');
+    const [server, setServer] = useState('');
     const [load, setLoad] = useState(null);
     const msj = useSelector((store) => store.app.error);
     const session_token = useSelector((store) => store.app.session.session_token)
@@ -16,6 +16,7 @@ export const Login = ( ) => {
 
     useEffect(() => {
         if (msj) {
+            setLoad(false)
             Alert.alert('Error', msj, [
                 {
                     text: "Ok",
@@ -31,7 +32,6 @@ export const Login = ( ) => {
         setLoad(true)
         if (user !== '' || !user && pass !== '' || !pass && server !== '' || !server) {
             dispatch(initSession(user, pass, server))
-            setLoad(false)
         } else {
             Alert.alert('Completa todos los campos')
 
@@ -51,6 +51,7 @@ export const Login = ( ) => {
                     { label: 'Server Prueba', value: 'https://workana.with6.glpi-network.cloud' },
                     
                 ]}
+                value={server}
                 
             />
             <TextInput
@@ -68,6 +69,7 @@ export const Login = ( ) => {
             <Button
                 title="Iniciar Sesión"
                 onPress={() => sendData()}
+                disabled={load}
             />{
                 load ? (<ActivityIndicator size="large" color="#00ff00" />) : (null)
             }
