@@ -15,6 +15,8 @@ const init = {
         session: {}
     },
     profile_photo: null,
+    config:{},
+
 
     computer: {},
     monitor: {},
@@ -26,9 +28,7 @@ const init = {
     dcroom: {},
     rack: {},
     enclosure: {},
-    ticket: {},
-    cartridgeitem:{},
-    consumableitem:{},
+    cluster:{},
     pdu:{},
     passivedcequipment:{},
     Item_DeviceSimcard:{},
@@ -37,10 +37,13 @@ const init = {
     domains:{},
     licenses:{},
     certificates:{},
+    ticket: {},
+    cartridgeitem:{},
+    consumableitem:{},
     app_token: '',
     msj: '',
-    val:null
-
+    val:null,
+    category:[]
 
 }
 const INIT_SESSION = 'INIT_SESSION';
@@ -70,13 +73,13 @@ const LINES = 'LINES';
 const DOMAINS = 'DOMAINS';
 const LICENSES = 'LICENSES';
 const CERTIFICATES = 'CERTIFICATES';
+const CLUSTER = 'CLUSTER';
 
-
-
-
+const CATEGORY = 'CATEGORY';
 const MSJ = 'MSJ';
 const TICKET = 'TICKET';
 const VAL = 'VAL';
+const CONFIG = 'CONFIG';
 export const AppModule = (state = init, data) => {
     switch (data.type) {
         case INIT_SESSION:
@@ -103,6 +106,8 @@ export const AppModule = (state = init, data) => {
             return { ...state, networkE: data.payload }
         case DEVICESSIMCARD:
             return {...state,Item_DeviceSimcard:data.payload}
+        case CLUSTER:
+            return {...state,cluster:data.payload}
         case VAL:
             return {...state,val:data.payload}
         case PERIPHERAL:
@@ -131,8 +136,12 @@ export const AppModule = (state = init, data) => {
             return {...state,licenses:data.payload}
         case CERTIFICATES:
             return {...state,certificates:data.payload}
+        case CONFIG:
+            return {...state,config:data.payload}
         case TICKET:
             return { ...state, ticket: data.payload }
+        case CATEGORY:
+            return {...state,category:data.payload}
         case MSJ:
             return { ...state, msj: data.payload }
         default:
@@ -144,6 +153,7 @@ export const AppModule = (state = init, data) => {
 export const clearMsj = () => async (dispatch) => {
     dispatch({ type: ERROR, payload: null })
 }
+//iniciar sesion
 export const initSession = (user, pass, server) => async (dispatch) => {
     try {
         //const token = Buffer.from(`${user}:${pass}`, 'utf8').toString('base64')
@@ -173,7 +183,28 @@ export const initSession = (user, pass, server) => async (dispatch) => {
     }
 }
 
+//obtener la configuracion
+export const getConfig =(server,session_token)=>async(dispatch)=>{
+    try {
+        const URL = server + '/apirest.php/getGlpiConfig';
+        const res = await axios.get(URL, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Session-Token': `${session_token.session_token}`,
+                'App-Token': '8HLily4SwCo3yJv3NI3nTwowB3EFhAMuL9itKPQB'
 
+            }
+        })
+        dispatch({ type: CONFIG, payload: res.data })
+    } catch (error) {
+        dispatch({
+            type: ERROR, payload: 'Error al conectar al servidor'
+
+        })
+    }
+}
+
+//obtiene el perfil 
 export const getProfile = (server, session_token) => async (dispatch) => {
     try {
 
@@ -195,6 +226,7 @@ export const getProfile = (server, session_token) => async (dispatch) => {
     }
 }
 
+//obtiene la sesion
 export const getfullSession = (server, session_token) => async (dispatch) => {
     try {
 
@@ -220,6 +252,7 @@ export const getfullSession = (server, session_token) => async (dispatch) => {
 }
 
 
+//obtiene la foto
 export const getPhotoProfile = (server, id, session_token) => async (dispatch) => {
     try {
         console.log(id)
@@ -242,7 +275,7 @@ export const getPhotoProfile = (server, id, session_token) => async (dispatch) =
     }
 }
 
-
+//obtiene un item
 export const getItem = (type, server, session_token) => async (dispatch) => {
     try {
         const URL = server + '/apirest.php/' + type
@@ -253,39 +286,55 @@ export const getItem = (type, server, session_token) => async (dispatch) => {
                 'App-Token': '8HLily4SwCo3yJv3NI3nTwowB3EFhAMuL9itKPQB'
             }
         })
+        if(res.status==200){
+            dispatch({type:VAL,payload:true})
+
         if (type == 'Computer') {
-            dispatch({ type: COMPUTER, payload: res.data.length })
+            dispatch({ type: COMPUTER, payload: res.data })
         } else if (type == 'Monitor') {
-            dispatch({ type: MONITOR, payload: res.data.length })
+            dispatch({ type: MONITOR, payload: res.data })
         } else if (type == 'NetworkEquipment') {
-            dispatch({ type: NETWORKE, payload: res.data.length })
+            dispatch({ type: NETWORKE, payload: res.data })
         } else if (type == 'Peripheral') {
-            dispatch({ type: PERIPHERAL, payload: res.data.length })
+            dispatch({ type: PERIPHERAL, payload: res.data })
         } else if (type == 'Phone') {
-            dispatch({ type: PHONE, payload: res.data.length })
+            dispatch({ type: PHONE, payload: res.data })
         } else if (type == 'Printer') {
-            dispatch({ type: PRINTER, payload: res.data.length })
+            dispatch({ type: PRINTER, payload: res.data })
         } else if (type == 'Software') {
-            dispatch({ type: SOFTWARE, payload: res.data.length })
-        } else if (type == 'DCRoom') {
-            dispatch({ type: DCROOM, payload: res.data.length })
+            dispatch({ type: SOFTWARE, payload: res.data })
+        } else if(type=='Licenses'){
+            dispatch({type:LICENSES,payload:res.data})
+        }if(type=='Certificate'){
+            dispatch({type:CERTIFICATES,payload:res.data})
+        }else if(type=='Line'){
+            dispatch({type:LINES,payload:res.data})
+        }else if (type == 'DCRoom') {
+            dispatch({ type: DCROOM, payload: res.data })
         } else if (type == 'Rack') {
-            dispatch({ type: RACK, payload: res.data.length })
+            dispatch({ type: RACK, payload: res.data })
         } else if (type == 'Enclosure') {
-            dispatch({ type: ENCLOSURE, payload: res.data.length })
-        } else if (type == 'Tickets') {
-            dispatch({ type: TICKET, payload: res.data.length })
+            dispatch({ type: ENCLOSURE, payload: res.data })
         }else if(type=='cartridgeitem'){
-            dispatch({type:CARTRIDGE,payload:res.data.length})
+            dispatch({type:CARTRIDGE,payload:res.data})
         }else if(type=='consumableitem'){
-            dispatch({type:CONSUMABLE,payload:res.data.length})
-        }else if(type=='PDUs'){
-            dispatch({type:PDU,payload:res.data.length})
-        }else if(type=='passivedcequipment'){
-            dispatch({type:PASSIVEDCEQUIPMENT,payload:res.data.length})
+            dispatch({type:CONSUMABLE,payload:res.data})
+        }else if(type=='PDU'){
+            dispatch({type:PDU,payload:res.data})
+        }else if(type=='PassiveDCEquipment'){
+            dispatch({type:PASSIVEDCEQUIPMENT,payload:res.data})
         }else if(type=='Simcards'){
-            dispatch({type:DEVICESSIMCARD,payload:res.data.length})
-        }
+            dispatch({type:DEVICESSIMCARD,payload:res.data})
+        } else if (type == 'Ticket') {
+            dispatch({ type: TICKET, payload: res.data })
+        }else if(type=='Domain'){
+            dispatch({type:DOMAINS,payload:res.data})
+        }else if(type=='Cluster'){
+            dispatch({type:CLUSTER,payload:res.data})
+        }else if(type=='itilcategory'){
+            dispatch({type:CATEGORY,payload:res.data})
+        }}
+        
     } catch (error) {
         if(error.response.status==401){
             dispatch({type:VAL,payload:false})

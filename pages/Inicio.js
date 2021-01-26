@@ -8,46 +8,64 @@ import Constants from 'expo-constants';
 import { CardItem } from '../components/Card'
 export const Inicio = ({ navigation }) => {
     const auth = useSelector((store) => store.app.profiles)
-    const { computer, monitor, networkE, peripheral, phone, printer, software,
-        dcroom, rack, enclosure, cartridgeitem, ticket, consumableitem, pdu, passivedcequipment,
+    const { computer, monitor, 
+        networkE, peripheral, 
+        phone, printer, software,
+        dcroom, rack,cluster ,
+        enclosure, server_room,
+        lineas,domains,licenses,
+        certificates,cartridgeitem, 
+        ticket, consumableitem, 
+        pdu, passivedcequipment,
         Item_DeviceSimcard } = useSelector((store) => store.app)
-    const [com, setCom] = useState(0)
-    const [mon, setMon] = useState(0)
-    const [net, setNet] = useState(0)
-    const [per, setPer] = useState(0)
-    const [pho, setPho] = useState(0)
-    const [pri, setPri] = useState(0)
-    const [soft, setSoft] = useState(0)
-    const [cart, setCart] = useState(0)
-    const [dcr, setDcr] = useState(0)
-    const [ra, setRa] = useState(0)
-    const [en, setEn] = useState(0)
-    const [con, setCon] = useState(0)
-    const [pd, setPd] = useState(0)
-    const [pass, setPass] = useState(0)
-    const [sim, setSim] = useState(0)
+    const [com, setCom] = useState(null)//COMPUTER
+    const [mon, setMon] = useState(null)//MONITOR
+    const [net, setNet] = useState(null)//NETWORK_DEVICES
+    const [per, setPer] = useState(null)//PERIPHERICAL
+    const [pho, setPho] = useState(null)//PHONE
+    const [pri, setPri] = useState(null)//PRINTER
+    const [soft, setSoft] = useState(null)//SOFTWARE
+    const [dcr, setDcr] = useState(null)//DCROOM
+    const [ra, setRa] = useState(null)//RACK
+    const [clus,setCluster] = useState(null)//CLUSTER
+    const [en, setEn] = useState(null)//ENCLOUSER
+    const [ser,setSer] = useState(null)//SERVER_ROOM
+    const [lin,setLin] = useState(null)//LINEAS
+    const [dom,setDom] = useState(null)//DOMAINS
+    const [lic,setLic] = useState(null)//LICENSES
+    const [cert,setCert] = useState(null)//CERTIFICATE
+    const [cart, setCart] = useState(null)//CARTRIDGEITEM
+    const [con, setCon] = useState(null)//CONSUMABLEITEM
+    const [pd, setPd] = useState(null)//PDU
+    const [pass, setPass] = useState(null)//PASSIVE EQUIPEMENT
+    const [sim, setSim] = useState(null)//SIM CARD
     useEffect(() => {
-        console.log(auth)
-        setCom(computer ? computer : 0)
-        setMon(monitor ? monitor : 0)
-        setNet(networkE ? networkE : 0)
-        setPer(peripheral ? peripheral : 0)
-        setPho(phone ? phone : 0)
-        setPri(printer ? printer : 0)
-        setSoft(software ? software : 0)
-        setDcr(dcroom ? dcroom : 0)
-        setRa(rack ? rack : 0)
-        setEn(enclosure ? enclosure : 0)
-        setCart(cartridgeitem ? cartridgeitem : 0)
-        setCon(consumableitem ? consumableitem : 0)
-        setPd(pdu ? pdu : 0)
-        setPass(passivedcequipment ? passivedcequipment : 0)
-        setSim(Item_DeviceSimcard ? Item_DeviceSimcard : 0)
-
+        setCom(computer ? computer.length : null)
+        setMon(monitor ? monitor.length : null)
+        setNet(networkE ? networkE.length : null)
+        setPer(peripheral ? peripheral.length : null)
+        setPho(phone ? phone.length : null)
+        setPri(printer ? printer.length : null)
+        setSoft(software ? software.length : null)
+        setDcr(dcroom ? dcroom.length : null)
+        setRa(rack ? rack.length : null)
+        setCluster(cluster?cluster.length:null)
+        setEn(enclosure ? enclosure.length : null)
+        setSer(server_room?server_room.length:null)
+        setLin(lineas?lineas.length:null)
+        setCert(certificates?certificates.length:null)
+        setCart(cartridgeitem ? cartridgeitem.length : null)
+        setCon(consumableitem ? consumableitem.length : null)
+        setPd(pdu ? pdu.length : null)
+        setPass(passivedcequipment ? passivedcequipment.length : null)
+        setSim(Item_DeviceSimcard ? Item_DeviceSimcard.length : null)
+        setDom(domains?domains.length:null)
+        setLic(licenses?licenses.length:null)
     })
 
 
     return (
+        {/*
         <SafeAreaView style={{ flex: 1 }}>
             <ScrollView style={{ marginHorizontal: 1}}>
                 <View style={{ padding: 5, flexDirection: 'row' }}>
@@ -80,6 +98,6 @@ export const Inicio = ({ navigation }) => {
                 </View>
             </ScrollView>
         </SafeAreaView>
-
+        */}
     )
 }

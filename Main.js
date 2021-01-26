@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { Login } from './pages/Login';
 import {InicioUsu} from './InicioUsu'
 import { useDispatch, useSelector } from 'react-redux';
+import { getProfile, getfullSession,getConfig } from './redux/app'
 
 const Stack = createStackNavigator();
 
@@ -20,13 +21,18 @@ const MyTheme = {
 };
 
 export const Main = () => {
+    const dispatch = useDispatch()
+
     const [isAuth, setAuth] = useState(false)
     const auth = useSelector((store) => store.app.session.session_token)
+    const server = useSelector((store)=>store.app.session.server)
 
     useEffect(() => {
         if (auth !== '') {
             setAuth(true)
-           
+            dispatch(getProfile(server, auth))
+            dispatch(getfullSession(server, auth))
+            dispatch(getConfig(server,auth))
 
 
         }
