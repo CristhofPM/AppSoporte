@@ -43,7 +43,13 @@ const init = {
     app_token: '',
     msj: '',
     val:null,
-    category:[]
+    category:[],
+    state:[],
+    user:[],
+    group:[],
+    supplier:[],
+    RequestType:[],
+    Location:[]
 
 }
 const INIT_SESSION = 'INIT_SESSION';
@@ -75,7 +81,13 @@ const LICENSES = 'LICENSES';
 const CERTIFICATES = 'CERTIFICATES';
 const CLUSTER = 'CLUSTER';
 
+const LOCATION = 'LOCATION';
+const REQUESTTYPE = 'REQUESTTYPE';
+const SUPPLIER = 'SUPPLIER';
+const GROUP = 'GROUP';
+const STATE = 'STATE';
 const CATEGORY = 'CATEGORY';
+const USER = 'USER';
 const MSJ = 'MSJ';
 const TICKET = 'TICKET';
 const VAL = 'VAL';
@@ -108,8 +120,20 @@ export const AppModule = (state = init, data) => {
             return {...state,Item_DeviceSimcard:data.payload}
         case CLUSTER:
             return {...state,cluster:data.payload}
+        case SUPPLIER:
+            return {...state,supplier:data.payload}
+        case USER:
+            return {...state,user:data.payload}
+        case GROUP:
+            return {...state,group:data.payload}
+        case STATE:
+            return {...state,state:data.payload}
+        case REQUESTTYPE:
+            return {...state,RequestType:data.payload}
         case VAL:
             return {...state,val:data.payload}
+        case LOCATION:
+            return {...state,Location:data.payload}
         case PERIPHERAL:
             return { ...state, peripheral: data.payload }
         case PHONE:
@@ -333,6 +357,18 @@ export const getItem = (type, server, session_token) => async (dispatch) => {
             dispatch({type:CLUSTER,payload:res.data})
         }else if(type=='itilcategory'){
             dispatch({type:CATEGORY,payload:res.data})
+        }else if(type=='state'){
+            dispatch({type:STATE,payload:res.data})
+        }else if(type=='user'){
+            dispatch({type:USER,payload:res.data})
+        }else if(type=='group'){
+            dispatch({type:GROUP,payload:res.data})
+        }else if(type=='Supplier'){
+            dispatch({type:SUPPLIER,payload:res.data})
+        }else if(type=='RequestType'){
+            dispatch({type:REQUESTTYPE,payload:res.data})
+        }else if(type=='Location'){
+            dispatch({type:LOCATION,payload:res.data})
         }}
         
     } catch (error) {

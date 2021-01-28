@@ -24,16 +24,20 @@ export const InicioUsu =()=>{
     
     useEffect(()=>{
         if(auth){
-            console.log(profiles)
             const getItemF = async()=>{
                 if(profiles){
                     profiles.helpdesk_item_type.map(e=>{
-                    console.log(e)
         
                     dispatch(getItem(e,server,auth))
                 })
                 dispatch(getItem('Ticket',server,auth))
                 dispatch(getItem('itilcategory',server,auth))
+                dispatch(getItem('user',server,auth))
+                dispatch(getItem('group',server,auth))
+                dispatch(getItem('Supplier',server,auth))
+                dispatch(getItem('state',server,auth))
+                dispatch(getItem('RequestType',server,auth))
+                dispatch(getItem('Location',server,auth))
 
             }
             }
@@ -46,7 +50,7 @@ export const InicioUsu =()=>{
             setVa(val)
         }
        
-    })
+    },[profiles])
 
 
     return(

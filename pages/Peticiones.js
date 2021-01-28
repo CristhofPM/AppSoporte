@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { View, ScrollView, Text, TouchableOpacity } from 'react-native'
 import { ListItem, Icon } from 'react-native-elements'
-
 export const Peticiones = () => {
     const peticiones = useSelector((store) => store.app.ticket)
     const config = useSelector((store) => store.app.config)
@@ -13,25 +12,21 @@ export const Peticiones = () => {
     const [pri4, setPri4] = useState('black')
     const [pri5, setPri5] = useState('black')
     const [pri6, setPri6] = useState('black')
-
     useEffect(() => {
         if (peticiones) {
-            console.log(config)
             console.log(peticiones)
-
             setPet(peticiones)
         }
-        if (config) {
-            setPri1(config.cfg_glpi.priority_1)
-            setPri2(config.cfg_glpi.priority_2)
-            setPri3(config.cfg_glpi.priority_3)
-            setPri4(config.cfg_glpi.priority_4)
-            setPri5(config.cfg_glpi.priority_5)
-            setPri6(config.cfg_glpi.priority_6)
+        if (config !== undefined) {
+            setPri1(config.cfg_glpi.priority_1 || 'white')
+            setPri2(config.cfg_glpi.priority_2 || 'white')
+            setPri3(config.cfg_glpi.priority_3 || 'white')
+            setPri4(config.cfg_glpi.priority_4 || 'white')
+            setPri5(config.cfg_glpi.priority_5 || 'white')
+            setPri6(config.cfg_glpi.priority_6 || 'white')
 
         }
-    },[peticiones])
-
+    }, [peticiones])
     const Icono = (estado) => {
         if (estado == 1) {
             return <View style={{ flexDirection: 'row' }}>
@@ -65,7 +60,6 @@ export const Peticiones = () => {
             </View>
         }
     }
-
     const IconPriority = (pri) => {
         if (pri == 1) {
             return <View style={{ flexDirection: 'row' }}>
@@ -97,7 +91,7 @@ export const Peticiones = () => {
         }
     }
     return (
-        <View>
+        <View style={{ flex: 1, flexDirection: 'column' }}>
             <ScrollView>
                 {
                     pet.map((l, i) => (
@@ -112,27 +106,6 @@ export const Peticiones = () => {
                     ))
                 }
             </ScrollView>
-            <TouchableOpacity onPress={() => console.log('ss')} style={{
-
-                position: 'absolute',
-                bottom: 1,
-                right: 10,
-            }}>
-                <View
-                    style={{
-                        backgroundColor: '#2CAADE',
-                        width: 60,
-                        height: 60,
-                        borderRadius: 45,
-                        alignContent:'center',
-                        flexDirection:'column',
-                        flex:1
-                    }}
-                >
-                <Icon size={35} name='add' color='white' type='ionicon' style={{marginTop:10}} />
-                </View>
-            </TouchableOpacity>
         </View>
-
     )
 }
