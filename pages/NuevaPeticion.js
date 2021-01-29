@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, StyleSheet, ScrollView, TextInput, KeyboardAvoidingView } from 'react-native'
+import { View, Text, StyleSheet, ScrollView, TextInput, KeyboardAvoidingView, Alert } from 'react-native'
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Button, Divider, Icon, ListItem, } from 'react-native-elements'
 import RNPickerSelect from 'react-native-picker-select';
-import { useSelector } from 'react-redux';
-import { actions, RichEditor,RichToolbar } from 'react-native-pell-rich-editor'
+import { useSelector,useDispatch } from 'react-redux';
+import { actions, RichEditor, RichToolbar } from 'react-native-pell-rich-editor'
+import {addItem,clearMsj} from '../redux/app'
 export const NuevaPeticion = () => {
     const richText = React.createRef();
-
-    const { category, user, group, supplier, RequestType, Location } = useSelector((store) => store.app)
+    const  dispatch = useDispatch();
+    //load
+    const [load,setLoad]=useState(false);
+    const { category, user, group, supplier, RequestType, Location, ticket, error,
+        config,session } = useSelector((store) => store.app)
     //categoria api
     const [cat, setCat] = useState([{ label: 'Sin datos', value: 0 }])
     //usuarios api
@@ -29,7 +33,7 @@ export const NuevaPeticion = () => {
         { label: 'Mayor', value: 6 }
     ]
     //tiempo duracion
-    const [timer, setTimer] = useState([])
+    const [timer, setTimer] = useState([{ label: 'Sin datos', value: 0 }])
     const time = async () => {
         let array = []
         let count = (386 - 91) * 5;
@@ -60,8 +64,12 @@ export const NuevaPeticion = () => {
 
 
     //Location api
-    const [locat, setLocat] = useState('')
+    const [locat, setLocat] = useState([{ label: 'Buscando...', value: 0 }])
 
+    //Tickets api
+    const [ticketApi, setTicketApi] = useState([{ label: 'Buscando...', value: 0 }])
+    const [elementosApi, setElementosApi] = useState([{ label: 'Buscando...', value: 0 }])
+    /**************************************************************************/
     //Fecha de Apertura	
     const [dateApertura, setDateApertura] = useState(new Date(1598051730000));
     const [showApertura, setShowApertura] = useState(false);
@@ -108,11 +116,28 @@ export const NuevaPeticion = () => {
     //ubicacion
     const [loc, setLoc] = useState('')
     //total duracion
-    const [totalD, setTotal] = useState(0)
+    const [totalD, setTotal] = useState(0);
     //titulo
-    const [titulo, setTitulo] = useState('')
+    const [titulo, setTitulo] = useState('');
+    //descripcion
+    const [descripcion,setDescripcion]=useState('');
+    //tipo de vinculacion
+    const [tipoVin, setTipoVin] = useState(0);
+    //id vinculados
+    const [ticketsId, setTicketId] = useState('');
+    //elementos asociados
+    const [elementsId, setElementId] = useState('');
     useEffect(() => {
-
+        if(error){
+            setLoad(false)
+            Alert.alert('Error', error, [
+                {
+                    text: "Ok",
+                    onPress: () => dispatch(clearMsj()),
+                    style: "cancel"
+                }
+            ])
+        }
         const json = async () => {
             let array = []
             if (category) {
@@ -183,11 +208,38 @@ export const NuevaPeticion = () => {
             }
 
             setLocat(arrayLo)
+            let ticketArray = [];
+            if (ticket !== undefined) {
+                ticket.forEach(element => {
+                    const obj = {
+                        label: `${element.name} - ${element.id}`,
+                        value: element.id
+                    }
+                    ticketArray.push(obj)
+                });
+            }
+            setTicketApi(ticketArray)
         }
+        let arrayElement = [];
+        if (config) {
+            if (config.cfg_glpi !== undefined) {
+                if (config.cfg_glpi.ticket_types !== undefined) {
+                    config.cfg_glpi.ticket_types.forEach(e => {
+                        const obj = {
+                            label: e,
+                            value: e
+                        }
+                        arrayElement.push(obj)
+                    })
+
+                }
+            }
+        }
+        setElementosApi(arrayElement)
 
         json()
 
-    }, [category, user, group, supplier, RequestType, Location])
+    }, [category, user, group, supplier, RequestType, Location, ticket, config,session,error])
     //editor
     const editorInitializedCallback = () => {
         richText.current?.registerToolbar(function (items) {
@@ -219,6 +271,66 @@ export const NuevaPeticion = () => {
         setShowIn(false)
         setDateIn(currentDate);
     };
+
+    //click btn
+    const saveTicket = ()=>{
+        if(titulo!='' && descripcion!=''){
+            setLoad(true);
+
+            const  obj = `{
+                "input":{
+                    "entities_id": ${0},
+                    "name": ${titulo},
+                    "date": "2021-01-21 01:02:06",
+                    "closedate": ${null},
+                    "solvedate": ${null},
+                    "date_mod": "2021-01-21 01:02:06",
+                    "users_id_lastupdater": ${6},
+                    "status": ${1},
+                    "users_id_recipient": ${6},
+                    "requesttypes_id": ${1},
+                    "content": ${descripcion},
+                    "urgency": ${3},
+                    "impact": ${3},
+                    "priority": ${3},
+                    "itilcategories_id": ${0},
+                    "type": ${2},
+                    "global_validation": ${1},
+                    "slas_id_ttr": ${0},
+                    "slas_id_tto": ${0},
+                    "slalevels_id_ttr": ${0},
+                    "time_to_resolve": ${null},
+                    "time_to_own": null,
+                    "begin_waiting_date": ${null},
+                    "sla_waiting_duration": 0,
+                    "ola_waiting_duration": 0,
+                    "olas_id_tto": ${0},
+                    "olas_id_ttr": ${0},
+                    "olalevels_id_ttr": ${0},
+                    "ola_ttr_begin_date": ${null},
+                    "internal_time_to_resolve": ${null},
+                    "internal_time_to_own": ${null},
+                    "waiting_duration": ${0},
+                    "close_delay_stat": ${0},
+                    "solve_delay_stat": ${0},
+                    "takeintoaccount_delay_stat": ${0},
+                    "actiontime": ${0},
+                    "is_deleted": ${0},
+                    "locations_id": ${0},
+                    "validation_percent": ${0},
+                    "date_creation": "2021-01-21 01:02:06",
+                }
+
+            }`
+            if(session){
+                dispatch(addItem(obj,session.server,session.session_token,'Ticket'))
+
+            }
+        }else{
+            setLoad(false)
+            Alert.alert('Campos incompletos');
+        }
+    }
     return (
         <View style={{ flexDirection: 'column', flex: 1, backgroundColor: 'white' }}>
             <ScrollView style={{ padding: 20 }}>
@@ -267,9 +379,14 @@ export const NuevaPeticion = () => {
                 <View style={{ flexDirection: 'column', padding: 10 }}>
                     <Text style={styles.text}>Tipo</Text>
                     <RNPickerSelect
+                        style={{ viewContainer: styles.select }}
                         key='tipo'
                         onValueChange={text => setTipo(text)}
-                        
+                        placeholder={{
+                            label: '--------------',
+                            value: tipo,
+                            color: 'blue'
+                        }}
                         items={[
                             { label: 'Incidencia', value: 1 },
                             { label: 'Requerimiento', value: 2 }
@@ -311,16 +428,33 @@ export const NuevaPeticion = () => {
                     <Text style={styles.text}>Categoria</Text>
                     <RNPickerSelect
                         key='Categoria'
+                        style={{ viewContainer: styles.select }}
+
+                        placeholder={{
+                            label: '----------',
+                            value: categoria,
+                            color: 'blue'
+                        }}
                         onValueChange={text => setCategoria(text)}
                         items={cat}
                         value={categoria}
                     />
+                </View>
+                <View style={{ flexDirection: 'column', padding: 10 }}>
                     <Divider />
+
                     <ListItem bottomDivider>
                         <ListItem.Content>
                             <ListItem.Title>Solicitante</ListItem.Title>
                             <Icon reverse size={15} name='person' color='black' type='ionicon' />
                             <RNPickerSelect
+                                style={{ viewContainer: styles.select }}
+
+                                placeholder={{
+                                    label: '----------',
+                                    value: solicitante,
+                                    color: 'blue'
+                                }}
                                 key='Solicitante'
                                 onValueChange={text => setSolicitante(text)}
                                 items={users}
@@ -329,6 +463,13 @@ export const NuevaPeticion = () => {
                             <Icon reverse size={15} name='people' color='black' type='ionicon' />
                             <RNPickerSelect
                                 key='SoliGroup'
+                                style={{ viewContainer: styles.select }}
+
+                                placeholder={{
+                                    label: '----------',
+                                    value: solicitanteGroup,
+                                    color: 'blue'
+                                }}
                                 onValueChange={text => setSolicitanteGroup(text)}
                                 items={groupS}
                                 value={solicitanteGroup}
@@ -341,6 +482,13 @@ export const NuevaPeticion = () => {
                             <Icon reverse size={15} name='person' color='black' type='ionicon' />
 
                             <RNPickerSelect
+                                style={{ viewContainer: styles.select }}
+
+                                placeholder={{
+                                    label: '----------',
+                                    value: observador,
+                                    color: 'blue'
+                                }}
                                 key='Observador'
                                 onValueChange={text => setObservador(text)}
                                 items={users}
@@ -349,7 +497,14 @@ export const NuevaPeticion = () => {
                             />
                             <Icon reverse size={15} name='people' color='black' type='ionicon' />
                             <RNPickerSelect
+                                style={{ viewContainer: styles.select }}
+
                                 key='GrupoObs'
+                                placeholder={{
+                                    label: '----------',
+                                    value: groupOb,
+                                    color: 'blue'
+                                }}
                                 onValueChange={text => setGroupOb(text)}
                                 items={groupS}
                                 value={groupOb}
@@ -365,6 +520,13 @@ export const NuevaPeticion = () => {
                             <Icon reverse size={15} name='people' color='black' type='ionicon' />
                             <RNPickerSelect
                                 key='Asignado'
+                                style={{ viewContainer: styles.select }}
+
+                                placeholder={{
+                                    label: '----------',
+                                    value: asignado,
+                                    color: 'blue'
+                                }}
                                 onValueChange={text => setAsignado(text)}
                                 items={groupS}
                                 value={asignado}
@@ -372,7 +534,14 @@ export const NuevaPeticion = () => {
                             />
                             <Icon reverse size={15} name='dolly' color='black' type='font-awesome-5' />
                             <RNPickerSelect
+                                style={{ viewContainer: styles.select }}
+
                                 key='Suppl'
+                                placeholder={{
+                                    label: '----------',
+                                    value: aSuppl,
+                                    color: 'blue'
+                                }}
                                 onValueChange={text => setASuppl(text)}
                                 items={suppl}
 
@@ -384,6 +553,13 @@ export const NuevaPeticion = () => {
                         <Text style={styles.text}>Estado</Text>
                         <RNPickerSelect
                             key='estado'
+                            style={{ viewContainer: styles.select }}
+
+                            placeholder={{
+                                label: '----------',
+                                value: est,
+                                color: 'blue'
+                            }}
                             onValueChange={text => setEst(text)}
                             items={[
                                 { label: 'Nuevo', value: 1, inputLabel: 'Nuevo' },
@@ -401,7 +577,14 @@ export const NuevaPeticion = () => {
                     <View style={{ flexDirection: 'column' }}>
                         <Text style={styles.text}>Fuente solicitante</Text>
                         <RNPickerSelect
+                            style={{ viewContainer: styles.select }}
+
                             key='Solicitante'
+                            placeholder={{
+                                label: '----------',
+                                value: rt,
+                                color: 'blue'
+                            }}
                             onValueChange={text => setRt(text)}
                             items={requestType}
                             value={rt}
@@ -411,7 +594,14 @@ export const NuevaPeticion = () => {
                     <View style={{ flexDirection: 'column' }}>
                         <Text style={styles.text}>Urgencia</Text>
                         <RNPickerSelect
+                            style={{ viewContainer: styles.select }}
+
                             key='Urgencia'
+                            placeholder={{
+                                label: '----------',
+                                value: urgen,
+                                color: 'blue'
+                            }}
                             onValueChange={text => setUrgen(text)}
                             items={urg}
                             value={urgen}
@@ -421,7 +611,14 @@ export const NuevaPeticion = () => {
                     <View style={{ flexDirection: 'column' }}>
                         <Text style={styles.text}>Impacto</Text>
                         <RNPickerSelect
+                            style={{ viewContainer: styles.select }}
+
                             key='Impacto'
+                            placeholder={{
+                                label: '----------',
+                                value: im,
+                                color: 'blue'
+                            }}
                             onValueChange={text => setIm(text)}
                             items={urg}
                             value={im}
@@ -431,32 +628,81 @@ export const NuevaPeticion = () => {
                     <View style={{ flexDirection: 'column' }}>
                         <Text style={styles.text}>Prioridad</Text>
                         <RNPickerSelect
+                            style={{ viewContainer: styles.select }}
+
                             key='Prioridad'
+                            placeholder={{
+                                label: '----------',
+                                value: prio,
+                                color: 'blue'
+                            }}
                             onValueChange={text => setPrio(text)}
                             items={urg}
                             value={prio}
                         />
                     </View>
+
+                    
                     <Divider />
+
+
                     <View style={{ flexDirection: 'column' }}>
-                        <Text style={styles.text}>Localización	</Text>
+                        <Text style={styles.text}>Localización</Text>
                         <RNPickerSelect
+                            style={{ viewContainer: styles.select }}
+
                             key='Localizacion'
+                            placeholder={{
+                                label: '----------',
+                                value: loc,
+                                color: 'blue'
+                            }}
                             onValueChange={text => setLoc(text)}
                             items={locat}
                             value={loc}
                         />
                     </View>
+
+
+                    <View style={{ flexDirection: 'column' }}>
+                        <Text style={styles.text}>Elementos asociados</Text>
+                        <RNPickerSelect
+                            style={{ viewContainer: styles.select }}
+
+                            key='Elementos'
+                            placeholder={{
+                                label: '----------',
+                                value: elementsId,
+                                color: 'blue'
+                            }}
+                            onValueChange={text => setElementId(text)}
+                            items={elementosApi}
+                            value={elementsId}
+                        />
+                    </View>
+
+
                     <Divider />
+
+
                     <View style={{ flexDirection: 'column' }}>
                         <Text style={styles.text}>Tiempo Duración</Text>
                         <RNPickerSelect
+                            style={{ viewContainer: styles.select }}
+
                             key='Total duration'
+                            placeholder={{
+                                label: '----------',
+                                value: totalD,
+                                color: 'blue'
+                            }}
                             onValueChange={text => setTotal(text)}
                             items={timer}
                             value={totalD}
                         />
                     </View>
+
+
                     <View style={{ flexDirection: 'column' }}>
                         <View style={{ flexDirection: 'row' }}>
                             <Text style={styles.text}>Titulo</Text><Text style={{ color: 'red' }}>*</Text>
@@ -472,15 +718,15 @@ export const NuevaPeticion = () => {
                             <Text style={styles.text}>Descripcion</Text><Text style={{ color: 'red' }}>*</Text>
 
                         </View>
-                        
+
                         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
                             <RichToolbar
                                 editor={richText}
-                                
+
                                 actions={[
                                     actions.undo,
                                     actions.redo,
-                                   
+
                                     actions.setStrikethrough,
                                     actions.checkboxList,
                                     actions.insertOrderedList,
@@ -493,25 +739,68 @@ export const NuevaPeticion = () => {
 
                                     actions.heading1,
                                     actions.heading4,
-                                    
-                                  
+
+
                                 ]} // default defaultActions
-                                
-                                
+
+
                             />
                         </KeyboardAvoidingView>
                         <RichEditor
                             ref={richText}
-                            onChange={t => console.log(t)}
-                            style={{height:200,borderWidth:1,borderRadius:5}}
+                            onChange={t => setDescripcion(t)}
+                            style={{ height: 200, borderWidth: 1, borderRadius: 5 }}
                             editorInitializedCallback={editorInitializedCallback}
                             initialContentHTML={'<p>Descripcion</p>'}
                         />
-                    </View>
-                    <View style={{ flexDirection: 'column', height: 50 }}>
-                        <Button title='Guardar'></Button>
 
                     </View>
+
+                    <View style={{ flexDirection: 'column', marginTop: 20 }}>
+                        <Divider />
+                        <Text style={styles.text}>Tickets vinculados</Text>
+                        <RNPickerSelect
+                            style={{ viewContainer: styles.select }}
+
+                            key='Vinculados'
+                            placeholder={{
+                                label: 'Seleccione',
+                                value: tipoVin,
+                                color: 'blue'
+                            }}
+                            onValueChange={text => setTipoVin(text)}
+                            items={[
+                                { label: 'Vinculado a', value: 1 },
+                                { label: 'Duplicado', value: 2 },
+                                { label: 'Hijo de', value: 3 },
+                                { label: 'Padre de', value: 4 }
+                            ]}
+                            value={tipoVin}
+                        />
+                        <RNPickerSelect
+                            style={{ viewContainer: styles.select }}
+
+                            placeholder={{
+                                label: '-----------', value: ticketsId, color: 'blue'
+                            }}
+                            key='Tickets'
+                            onValueChange={text => setTicketId(text)}
+                            items={ticketApi}
+                            value={ticketsId}
+                            textInputProps={{ placeholderTextColor: 'blue' }}
+                        />
+                    </View>
+
+
+                    <View style={{ flexDirection: 'column', height: 50 }}>
+                        <Button title='Guardar' 
+                        loading={load} 
+                        disabled={load}
+                        onPress={()=>saveTicket()}>
+                        </Button>
+                    </View>
+
+
                 </View>
             </ScrollView>
         </View>
@@ -529,5 +818,13 @@ const styles = StyleSheet.create({
         padding: 10,
         borderRadius: 5
     },
+    select: {
+        marginTop: 20,
+        borderWidth: 1,
+        borderColor: 'black',
+        borderRadius: 5,
+        color: 'black',
+        marginBottom: 10
+    }
 
 })

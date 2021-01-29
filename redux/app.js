@@ -395,8 +395,9 @@ export const getItem = (type, server, session_token) => async (dispatch) => {
 
 export const addItem = (json, server, session_token, type) => async (dispatch) => {
     try {
+        console.log(server)
         const URL = server + '/apirest.php/' + type;
-        const res = await axios.post(URL,
+        const res = await axios.post(URL,json,
             {
                 headers: {
                     'Content-Type': 'appication/json',
@@ -405,7 +406,8 @@ export const addItem = (json, server, session_token, type) => async (dispatch) =
                 }
             }
         )
-        if (res.status == 200) {
+        if (res.status == 201) {
+            console.log('GUARDADO')
             dispatch({ type: MSJ, payload: res.data })
         } else if (res.status == 400 || res.status == 401) {
             dispatch({
@@ -414,9 +416,19 @@ export const addItem = (json, server, session_token, type) => async (dispatch) =
             })
         }
     } catch (error) {
-        dispatch({
-            type: ERROR, payload: error.message
-
-        })
+        console.log(error)
+        if(error.response.status==400){
+            console.log('ERROR AL GUARDAR')
+            dispatch({
+                type: ERROR, payload: error.message
+    
+            })
+        }else{
+            dispatch({
+                type: ERROR, payload: error.message
+    
+            })
+        }
+       
     }
 }
