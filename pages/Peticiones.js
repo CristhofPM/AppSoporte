@@ -14,16 +14,17 @@ export const Peticiones = () => {
     const [pri6, setPri6] = useState('black')
     useEffect(() => {
         if (peticiones) {
-            console.log(peticiones)
             setPet(peticiones)
         }
         if (config !== undefined) {
+            if(config.cfg_glpi!==undefined){
             setPri1(config.cfg_glpi.priority_1 || 'white')
             setPri2(config.cfg_glpi.priority_2 || 'white')
             setPri3(config.cfg_glpi.priority_3 || 'white')
             setPri4(config.cfg_glpi.priority_4 || 'white')
             setPri5(config.cfg_glpi.priority_5 || 'white')
             setPri6(config.cfg_glpi.priority_6 || 'white')
+            }
 
         }
     }, [peticiones])

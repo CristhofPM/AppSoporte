@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, StyleSheet, ScrollView } from 'react-native'
+import { View, Text, StyleSheet, ScrollView, TextInput, KeyboardAvoidingView } from 'react-native'
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { Button, Divider, Icon, ListItem } from 'react-native-elements'
+import { Button, Divider, Icon, ListItem, } from 'react-native-elements'
 import RNPickerSelect from 'react-native-picker-select';
 import { useSelector } from 'react-redux';
-
+import { actions, RichEditor,RichToolbar } from 'react-native-pell-rich-editor'
 export const NuevaPeticion = () => {
+    const richText = React.createRef();
 
     const { category, user, group, supplier, RequestType, Location } = useSelector((store) => store.app)
     //categoria api
@@ -27,6 +28,37 @@ export const NuevaPeticion = () => {
         { label: 'Muy Urgente', value: 5 },
         { label: 'Mayor', value: 6 }
     ]
+    //tiempo duracion
+    const [timer, setTimer] = useState([])
+    const time = async () => {
+        let array = []
+        let count = (386 - 91) * 5;
+        for (let i = 0; i < 11; i++) {
+            if (i == 10) {
+                array.push({ label: `0h${i}`, value: 60 * i })
+            } else {
+                array.push({ label: `0h0${i}`, value: 60 * i })
+            }
+        }
+        let count1 = 0;
+        let hour = 0;
+        let min = 0;
+        /*for (let index = 15; index < 55; index++) {
+            console.log(index)
+            min = index+5;
+            count1++;
+            if(count1==13){
+                hour++;
+                count1=0;
+                min=+5;
+                
+            }
+            array.push({label:`${hour}h${min}`,value:60*min}) 
+        }*/
+        return array;
+    }
+
+
     //Location api
     const [locat, setLocat] = useState('')
 
@@ -75,7 +107,12 @@ export const NuevaPeticion = () => {
     const [prio, setPrio] = useState('')
     //ubicacion
     const [loc, setLoc] = useState('')
+    //total duracion
+    const [totalD, setTotal] = useState(0)
+    //titulo
+    const [titulo, setTitulo] = useState('')
     useEffect(() => {
+
         const json = async () => {
             let array = []
             if (category) {
@@ -123,29 +160,40 @@ export const NuevaPeticion = () => {
             }
             setSuppl(arrayS)
             let arrayReTy = []
-            RequestType.forEach(e => {
-                const obj = {
-                    label: e.name,
-                    value: e.id
-                }
-                arrayReTy.push(obj)
-            })
+            if (RequestType !== undefined) {
+                RequestType.forEach(e => {
+                    const obj = {
+                        label: e.name,
+                        value: e.id
+                    }
+                    arrayReTy.push(obj)
+                })
+            }
+
             setRequestType(arrayReTy)
             let arrayLo = []
-            Location.forEach(e => {
-                const obj = {
-                    label: e.name,
-                    value: e.id
-                }
-                arrayLo.push(obj)
-            });
+            if (Location !== undefined) {
+                Location.forEach(e => {
+                    const obj = {
+                        label: e.name,
+                        value: e.id
+                    }
+                    arrayLo.push(obj)
+                });
+            }
+
             setLocat(arrayLo)
         }
 
         json()
-        console.log(requestType)
 
     }, [category, user, group, supplier, RequestType, Location])
+    //editor
+    const editorInitializedCallback = () => {
+        richText.current?.registerToolbar(function (items) {
+            // console.log('Toolbar click, selected items (insert end callback):', items);
+        });
+    }
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate || dateApertura;
         setShowApertura(false)
@@ -219,7 +267,9 @@ export const NuevaPeticion = () => {
                 <View style={{ flexDirection: 'column', padding: 10 }}>
                     <Text style={styles.text}>Tipo</Text>
                     <RNPickerSelect
+                        key='tipo'
                         onValueChange={text => setTipo(text)}
+                        
                         items={[
                             { label: 'Incidencia', value: 1 },
                             { label: 'Requerimiento', value: 2 }
@@ -260,6 +310,7 @@ export const NuevaPeticion = () => {
                 <View style={{ flexDirection: 'column', padding: 10 }}>
                     <Text style={styles.text}>Categoria</Text>
                     <RNPickerSelect
+                        key='Categoria'
                         onValueChange={text => setCategoria(text)}
                         items={cat}
                         value={categoria}
@@ -270,12 +321,14 @@ export const NuevaPeticion = () => {
                             <ListItem.Title>Solicitante</ListItem.Title>
                             <Icon reverse size={15} name='person' color='black' type='ionicon' />
                             <RNPickerSelect
+                                key='Solicitante'
                                 onValueChange={text => setSolicitante(text)}
                                 items={users}
                                 value={solicitante}
                             />
                             <Icon reverse size={15} name='people' color='black' type='ionicon' />
                             <RNPickerSelect
+                                key='SoliGroup'
                                 onValueChange={text => setSolicitanteGroup(text)}
                                 items={groupS}
                                 value={solicitanteGroup}
@@ -288,6 +341,7 @@ export const NuevaPeticion = () => {
                             <Icon reverse size={15} name='person' color='black' type='ionicon' />
 
                             <RNPickerSelect
+                                key='Observador'
                                 onValueChange={text => setObservador(text)}
                                 items={users}
                                 value={observador}
@@ -295,6 +349,7 @@ export const NuevaPeticion = () => {
                             />
                             <Icon reverse size={15} name='people' color='black' type='ionicon' />
                             <RNPickerSelect
+                                key='GrupoObs'
                                 onValueChange={text => setGroupOb(text)}
                                 items={groupS}
                                 value={groupOb}
@@ -309,6 +364,7 @@ export const NuevaPeticion = () => {
                             <ListItem.Title>Asignado a:</ListItem.Title>
                             <Icon reverse size={15} name='people' color='black' type='ionicon' />
                             <RNPickerSelect
+                                key='Asignado'
                                 onValueChange={text => setAsignado(text)}
                                 items={groupS}
                                 value={asignado}
@@ -316,6 +372,7 @@ export const NuevaPeticion = () => {
                             />
                             <Icon reverse size={15} name='dolly' color='black' type='font-awesome-5' />
                             <RNPickerSelect
+                                key='Suppl'
                                 onValueChange={text => setASuppl(text)}
                                 items={suppl}
 
@@ -326,6 +383,7 @@ export const NuevaPeticion = () => {
                     <View style={{ flexDirection: 'column' }}>
                         <Text style={styles.text}>Estado</Text>
                         <RNPickerSelect
+                            key='estado'
                             onValueChange={text => setEst(text)}
                             items={[
                                 { label: 'Nuevo', value: 1, inputLabel: 'Nuevo' },
@@ -343,6 +401,7 @@ export const NuevaPeticion = () => {
                     <View style={{ flexDirection: 'column' }}>
                         <Text style={styles.text}>Fuente solicitante</Text>
                         <RNPickerSelect
+                            key='Solicitante'
                             onValueChange={text => setRt(text)}
                             items={requestType}
                             value={rt}
@@ -352,6 +411,7 @@ export const NuevaPeticion = () => {
                     <View style={{ flexDirection: 'column' }}>
                         <Text style={styles.text}>Urgencia</Text>
                         <RNPickerSelect
+                            key='Urgencia'
                             onValueChange={text => setUrgen(text)}
                             items={urg}
                             value={urgen}
@@ -361,6 +421,7 @@ export const NuevaPeticion = () => {
                     <View style={{ flexDirection: 'column' }}>
                         <Text style={styles.text}>Impacto</Text>
                         <RNPickerSelect
+                            key='Impacto'
                             onValueChange={text => setIm(text)}
                             items={urg}
                             value={im}
@@ -370,6 +431,7 @@ export const NuevaPeticion = () => {
                     <View style={{ flexDirection: 'column' }}>
                         <Text style={styles.text}>Prioridad</Text>
                         <RNPickerSelect
+                            key='Prioridad'
                             onValueChange={text => setPrio(text)}
                             items={urg}
                             value={prio}
@@ -379,12 +441,77 @@ export const NuevaPeticion = () => {
                     <View style={{ flexDirection: 'column' }}>
                         <Text style={styles.text}>Localización	</Text>
                         <RNPickerSelect
+                            key='Localizacion'
                             onValueChange={text => setLoc(text)}
                             items={locat}
                             value={loc}
                         />
                     </View>
-                    <Button>Guardar</Button>
+                    <Divider />
+                    <View style={{ flexDirection: 'column' }}>
+                        <Text style={styles.text}>Tiempo Duración</Text>
+                        <RNPickerSelect
+                            key='Total duration'
+                            onValueChange={text => setTotal(text)}
+                            items={timer}
+                            value={totalD}
+                        />
+                    </View>
+                    <View style={{ flexDirection: 'column' }}>
+                        <View style={{ flexDirection: 'row' }}>
+                            <Text style={styles.text}>Titulo</Text><Text style={{ color: 'red' }}>*</Text>
+
+                        </View>
+                        <TextInput
+                            style={styles.input}
+                            onChangeText={text => setTitulo(text)}
+                            value={titulo}
+                            placeholder='Titulo'
+                        />
+                        <View style={{ flexDirection: 'row' }}>
+                            <Text style={styles.text}>Descripcion</Text><Text style={{ color: 'red' }}>*</Text>
+
+                        </View>
+                        
+                        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+                            <RichToolbar
+                                editor={richText}
+                                
+                                actions={[
+                                    actions.undo,
+                                    actions.redo,
+                                   
+                                    actions.setStrikethrough,
+                                    actions.checkboxList,
+                                    actions.insertOrderedList,
+                                    actions.blockquote,
+                                    actions.alignLeft,
+                                    actions.alignCenter,
+                                    actions.alignRight,
+                                    actions.code,
+                                    actions.line,
+
+                                    actions.heading1,
+                                    actions.heading4,
+                                    
+                                  
+                                ]} // default defaultActions
+                                
+                                
+                            />
+                        </KeyboardAvoidingView>
+                        <RichEditor
+                            ref={richText}
+                            onChange={t => console.log(t)}
+                            style={{height:200,borderWidth:1,borderRadius:5}}
+                            editorInitializedCallback={editorInitializedCallback}
+                            initialContentHTML={'<p>Descripcion</p>'}
+                        />
+                    </View>
+                    <View style={{ flexDirection: 'column', height: 50 }}>
+                        <Button title='Guardar'></Button>
+
+                    </View>
                 </View>
             </ScrollView>
         </View>
@@ -394,5 +521,13 @@ const styles = StyleSheet.create({
     text: {
         fontSize: 18,
         fontFamily: 'sans-serif'
-    }
+    },
+    input: {
+        borderColor: 'gray',
+        borderWidth: 1,
+        marginBottom: 10,
+        padding: 10,
+        borderRadius: 5
+    },
+
 })

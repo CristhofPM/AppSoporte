@@ -61,6 +61,7 @@ export const Login = ( ) => {
                 placeholder='Usuario'
             />
             <TextInput
+                secureTextEntry={true}
                 style={styles.input}
                 onChangeText={text => setPass(text)}
                 value={pass}
@@ -71,7 +72,7 @@ export const Login = ( ) => {
                 onPress={() => sendData()}
                 disabled={load}
             />{
-                load ? (<ActivityIndicator size="large" color="#00ff00" />) : (null)
+                load ? (<ActivityIndicator size="large" color="#9EC9F0" />) : (null)
             }
         </View>
     )

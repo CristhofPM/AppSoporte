@@ -37,7 +37,7 @@ const init = {
     domains:{},
     licenses:{},
     certificates:{},
-    ticket: {},
+    ticket: [],
     cartridgeitem:{},
     consumableitem:{},
     app_token: '',
@@ -199,10 +199,18 @@ export const initSession = (user, pass, server) => async (dispatch) => {
         }
         dispatch({ type: INIT_SESSION, payload: response })
     } catch (error) {
-        dispatch({
-            type: ERROR, payload: 'Error al conectar al servidor Inicio'
-
-        })
+        if(error.response.status==401){
+            dispatch({
+                type: ERROR, payload: 'Usuario y/o contraseña incorrecta'
+    
+            })
+        }else{
+            dispatch({
+                type: ERROR, payload: 'Error al conectar al servidor Inicio'
+    
+            })
+        }
+        
 
     }
 }
@@ -385,7 +393,7 @@ export const getItem = (type, server, session_token) => async (dispatch) => {
 }
 
 
-export const savePeticion = (json, server, session_token, type) => async (dispatch) => {
+export const addItem = (json, server, session_token, type) => async (dispatch) => {
     try {
         const URL = server + '/apirest.php/' + type;
         const res = await axios.post(URL,
