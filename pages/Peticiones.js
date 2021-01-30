@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
-import { View, ScrollView, Text, TouchableOpacity } from 'react-native'
-import { ListItem, Icon } from 'react-native-elements'
+import React, { useEffect, useState } from "react"
+import { useSelector } from "react-redux"
+import { View, ScrollView, Text, ActivityIndicator } from "react-native"
+import { ListItem, Icon } from "react-native-elements"
 export const Peticiones = () => {
     const peticiones = useSelector((store) => store.app.ticket)
     const config = useSelector((store) => store.app.config)
+    const [load, setLoad] = useState(true)
     const [pet, setPet] = useState([])
     const [pri1, setPri1] = useState('black')
     const [pri2, setPri2] = useState('black')
@@ -13,17 +14,19 @@ export const Peticiones = () => {
     const [pri5, setPri5] = useState('black')
     const [pri6, setPri6] = useState('black')
     useEffect(() => {
+        console.log('render')
         if (peticiones) {
+            setLoad(false)
             setPet(peticiones)
         }
         if (config !== undefined) {
-            if(config.cfg_glpi!==undefined){
-            setPri1(config.cfg_glpi.priority_1 || 'white')
-            setPri2(config.cfg_glpi.priority_2 || 'white')
-            setPri3(config.cfg_glpi.priority_3 || 'white')
-            setPri4(config.cfg_glpi.priority_4 || 'white')
-            setPri5(config.cfg_glpi.priority_5 || 'white')
-            setPri6(config.cfg_glpi.priority_6 || 'white')
+            if (config.cfg_glpi !== undefined) {
+                setPri1(config.cfg_glpi.priority_1 || 'white')
+                setPri2(config.cfg_glpi.priority_2 || 'white')
+                setPri3(config.cfg_glpi.priority_3 || 'white')
+                setPri4(config.cfg_glpi.priority_4 || 'white')
+                setPri5(config.cfg_glpi.priority_5 || 'white')
+                setPri6(config.cfg_glpi.priority_6 || 'white')
             }
 
         }
@@ -92,8 +95,11 @@ export const Peticiones = () => {
         }
     }
     return (
-        <View style={{ flex: 1, flexDirection: 'column' }}>
-            <ScrollView>
+        <View style={{ flexDirection: 'column', flex: 1, backgroundColor: 'white' }}>
+            <ScrollView style={{ padding: 20 }}>
+                {
+                load ? (<ActivityIndicator size="large" color="#9EC9F0" />) : (null)
+            }
                 {
                     pet.map((l, i) => (
                         <ListItem key={i} bottomDivider>

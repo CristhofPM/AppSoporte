@@ -177,6 +177,9 @@ export const AppModule = (state = init, data) => {
 export const clearMsj = () => async (dispatch) => {
     dispatch({ type: ERROR, payload: null })
 }
+export const clearMsjG = () => async (dispatch) => {
+    dispatch({ type: MSJ, payload: null })
+}
 //iniciar sesion
 export const initSession = (user, pass, server) => async (dispatch) => {
     try {
@@ -318,8 +321,7 @@ export const getItem = (type, server, session_token) => async (dispatch) => {
                 'App-Token': '8HLily4SwCo3yJv3NI3nTwowB3EFhAMuL9itKPQB'
             }
         })
-        if(res.status==200){
-            dispatch({type:VAL,payload:true})
+        console.log('API',type,res.status)
 
         if (type == 'Computer') {
             dispatch({ type: COMPUTER, payload: res.data })
@@ -358,6 +360,8 @@ export const getItem = (type, server, session_token) => async (dispatch) => {
         }else if(type=='Simcards'){
             dispatch({type:DEVICESSIMCARD,payload:res.data})
         } else if (type == 'Ticket') {
+            console.log('ticket')
+
             dispatch({ type: TICKET, payload: res.data })
         }else if(type=='Domain'){
             dispatch({type:DOMAINS,payload:res.data})
@@ -377,9 +381,10 @@ export const getItem = (type, server, session_token) => async (dispatch) => {
             dispatch({type:REQUESTTYPE,payload:res.data})
         }else if(type=='Location'){
             dispatch({type:LOCATION,payload:res.data})
-        }}
+        }
         
     } catch (error) {
+        console.log(error,type)
         if(error.response.status==401){
             dispatch({type:VAL,payload:false})
         }else{
@@ -395,40 +400,35 @@ export const getItem = (type, server, session_token) => async (dispatch) => {
 
 export const addItem = (json, server, session_token, type) => async (dispatch) => {
     try {
-        console.log(server)
-        const URL = server + '/apirest.php/' + type;
-        const res = await axios.post(URL,json,
-            {
-                headers: {
-                    'Content-Type': 'appication/json',
-                    'Session-Token': `${session_token.session_token}`,
-                    'App-Token': '8HLily4SwCo3yJv3NI3nTwowB3EFhAMuL9itKPQB'
-                }
-            }
-        )
+      console.log(json)
+      const URL = server + '/apirest.php/' + type;
+
+      var config = {
+        method: 'post',
+        url:  URL,
+        headers: { 
+          'Session-Token':  `${session_token.session_token}`,
+          'App-Token': '8HLily4SwCo3yJv3NI3nTwowB3EFhAMuL9itKPQB', 
+          'Content-Type': 'application/json'
+        },
+        data : json
+      };
+      
+        const res = await axios(config)
+        
+        
         if (res.status == 201) {
             console.log('GUARDADO')
-            dispatch({ type: MSJ, payload: res.data })
-        } else if (res.status == 400 || res.status == 401) {
-            dispatch({
-                type: ERROR, payload: 'error al guardar'
-
-            })
+            dispatch({ type: MSJ, payload: 'Peticion creada' })
         }
     } catch (error) {
-        console.log(error)
-        if(error.response.status==400){
-            console.log('ERROR AL GUARDAR')
+        console.log(error.response || error)
+        
             dispatch({
                 type: ERROR, payload: error.message
     
             })
-        }else{
-            dispatch({
-                type: ERROR, payload: error.message
-    
-            })
-        }
+        
        
     }
 }

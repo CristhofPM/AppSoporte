@@ -5,13 +5,13 @@ import { Button, Divider, Icon, ListItem, } from 'react-native-elements'
 import RNPickerSelect from 'react-native-picker-select';
 import { useSelector,useDispatch } from 'react-redux';
 import { actions, RichEditor, RichToolbar } from 'react-native-pell-rich-editor'
-import {addItem,clearMsj} from '../redux/app'
+import {addItem,clearMsj,clearMsjG, getItem} from '../redux/app'
 export const NuevaPeticion = () => {
     const richText = React.createRef();
     const  dispatch = useDispatch();
     //load
     const [load,setLoad]=useState(false);
-    const { category, user, group, supplier, RequestType, Location, ticket, error,
+    const { category, user, group, supplier, RequestType, Location, ticket, error,msj,
         config,session } = useSelector((store) => store.app)
     //categoria api
     const [cat, setCat] = useState([{ label: 'Sin datos', value: 0 }])
@@ -93,7 +93,7 @@ export const NuevaPeticion = () => {
     const [showIn, setShowIn] = useState(false)
 
     //categoria
-    const [categoria, setCategoria] = useState('');
+    const [categoria, setCategoria] = useState(0);
     //solicitante
     const [solicitante, setSolicitante] = useState('')
     const [solicitanteGroup, setSolicitanteGroup] = useState('')
@@ -106,15 +106,15 @@ export const NuevaPeticion = () => {
     //Estado
     const [est, setEst] = useState('')
     //Request type //Fuente solicitante	
-    const [rt, setRt] = useState('')
+    const [rt, setRt] = useState(0)
     //Urgencia
-    const [urgen, setUrgen] = useState('')
+    const [urgen, setUrgen] = useState(0)
     //Impacto
     const [im, setIm] = useState('');
     //prioridad
-    const [prio, setPrio] = useState('')
+    const [prio, setPrio] = useState(0)
     //ubicacion
-    const [loc, setLoc] = useState('')
+    const [loc, setLoc] = useState(0)
     //total duracion
     const [totalD, setTotal] = useState(0);
     //titulo
@@ -127,6 +127,11 @@ export const NuevaPeticion = () => {
     const [ticketsId, setTicketId] = useState('');
     //elementos asociados
     const [elementsId, setElementId] = useState('');
+
+    const ok =()=>{
+        dispatch(clearMsjG())
+        dispatch(getItem('Ticket',session.server,session.session_token))
+    }
     useEffect(() => {
         if(error){
             setLoad(false)
@@ -134,6 +139,16 @@ export const NuevaPeticion = () => {
                 {
                     text: "Ok",
                     onPress: () => dispatch(clearMsj()),
+                    style: "cancel"
+                }
+            ])
+        }
+        if(msj){
+            setLoad(false)
+            Alert.alert('Exito', msj, [
+                {
+                    text: "Ok",
+                    onPress: () => ok(),
                     style: "cancel"
                 }
             ])
@@ -239,7 +254,7 @@ export const NuevaPeticion = () => {
 
         json()
 
-    }, [category, user, group, supplier, RequestType, Location, ticket, config,session,error])
+    }, [category, user, group, supplier, RequestType, Location, ticket,config,session,error,msj])
     //editor
     const editorInitializedCallback = () => {
         richText.current?.registerToolbar(function (items) {
@@ -276,54 +291,48 @@ export const NuevaPeticion = () => {
     const saveTicket = ()=>{
         if(titulo!='' && descripcion!=''){
             setLoad(true);
-
-            const  obj = `{
+            var raw = JSON.stringify({
                 "input":{
-                    "entities_id": ${0},
-                    "name": ${titulo},
-                    "date": "2021-01-21 01:02:06",
-                    "closedate": ${null},
-                    "solvedate": ${null},
-                    "date_mod": "2021-01-21 01:02:06",
-                    "users_id_lastupdater": ${6},
-                    "status": ${1},
-                    "users_id_recipient": ${6},
-                    "requesttypes_id": ${1},
-                    "content": ${descripcion},
-                    "urgency": ${3},
-                    "impact": ${3},
-                    "priority": ${3},
-                    "itilcategories_id": ${0},
-                    "type": ${2},
-                    "global_validation": ${1},
-                    "slas_id_ttr": ${0},
-                    "slas_id_tto": ${0},
-                    "slalevels_id_ttr": ${0},
-                    "time_to_resolve": ${null},
-                    "time_to_own": null,
-                    "begin_waiting_date": ${null},
-                    "sla_waiting_duration": 0,
-                    "ola_waiting_duration": 0,
-                    "olas_id_tto": ${0},
-                    "olas_id_ttr": ${0},
-                    "olalevels_id_ttr": ${0},
-                    "ola_ttr_begin_date": ${null},
-                    "internal_time_to_resolve": ${null},
-                    "internal_time_to_own": ${null},
-                    "waiting_duration": ${0},
-                    "close_delay_stat": ${0},
-                    "solve_delay_stat": ${0},
-                    "takeintoaccount_delay_stat": ${0},
-                    "actiontime": ${0},
-                    "is_deleted": ${0},
-                    "locations_id": ${0},
-                    "validation_percent": ${0},
-                    "date_creation": "2021-01-21 01:02:06",
-                }
-
-            }`
+                    "actiontime":0,
+                    "begin_waiting_date":null,
+                    "close_delay_stat":0,
+                    "closedate":null,
+                    "content": descripcion,
+                    "date":"2021-01-21 01:02:06",
+                    "date_creation":"2021-01-21 01:02:06",
+                    "date_mod":"2021-01-21 01:02:06",
+                    "global_validation":1,
+                    "impact":im,
+                    "internal_time_to_own":null,
+                    "internal_time_to_resolve":null,
+                    "is_deleted":0,
+                    "itilcategories_id":categoria,
+                    "locations_id":loc,
+                    "name":titulo,
+                    "ola_ttr_begin_date":null,
+                    "ola_waiting_duration":0,
+                    "olalevels_id_ttr":0,
+                    "olas_id_tto":0,
+                    "olas_id_ttr":0,
+                    "priority":prio,
+                    "requesttypes_id":rt,
+                    "sla_waiting_duration":0,
+                    "slalevels_id_ttr":0,
+                    "slas_id_tto":0,
+                    "slas_id_ttr":0,
+                    "solve_delay_stat":0,
+                    "solvedate":null,
+                    "status":1,
+                    "takeintoaccount_delay_stat":0,
+                    "time_to_own":null,
+                    "time_to_resolve":null,
+                    "type":2,"urgency":urgen,
+                    "users_id_lastupdater":6,
+                    "users_id_recipient":6,
+                    "validation_percent":0,
+                    "waiting_duration":0}});
             if(session){
-                dispatch(addItem(obj,session.server,session.session_token,'Ticket'))
+                dispatch(addItem(raw,session.server,session.session_token,'Ticket'))
 
             }
         }else{

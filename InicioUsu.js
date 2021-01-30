@@ -30,7 +30,6 @@ export const InicioUsu =()=>{
         
                     dispatch(getItem(e,server,auth))
                 })
-                dispatch(getItem('Ticket',server,auth))
                 dispatch(getItem('itilcategory',server,auth))
                 dispatch(getItem('user',server,auth))
                 dispatch(getItem('group',server,auth))
@@ -38,6 +37,7 @@ export const InicioUsu =()=>{
                 dispatch(getItem('state',server,auth))
                 dispatch(getItem('RequestType',server,auth))
                 dispatch(getItem('Location',server,auth))
+                dispatch(getItem('Ticket',server,auth))
 
             }
             }
