@@ -14,7 +14,6 @@ export const Peticiones = () => {
     const [pri5, setPri5] = useState('black')
     const [pri6, setPri6] = useState('black')
     useEffect(() => {
-        console.log('render')
         if (peticiones) {
             setLoad(false)
             setPet(peticiones)

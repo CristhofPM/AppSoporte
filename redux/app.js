@@ -52,12 +52,14 @@ const init = {
     Location:[]
 
 }
+
 const INIT_SESSION = 'INIT_SESSION';
 const ERROR = 'ERROR';
 const GET_PROFILE = 'GET_PROFILE';
 const FULL_SESSION = 'FULL_SESSION';
 const PROFILE_PHOTO = 'PROFILE_PHOTO';
 
+const KILLSESION = 'KILLSESION'
 
 const COMPUTER = 'COMPUTER';
 const MONITOR = 'MONITOR';
@@ -168,6 +170,8 @@ export const AppModule = (state = init, data) => {
             return {...state,category:data.payload}
         case MSJ:
             return { ...state, msj: data.payload }
+        case KILLSESION:
+            return init;
         default:
             return { ...state }
             break;
@@ -290,7 +294,6 @@ export const getfullSession = (server, session_token) => async (dispatch) => {
 //obtiene la foto
 export const getPhotoProfile = (server, id, session_token) => async (dispatch) => {
     try {
-        console.log(id)
         const URL = server + '/apirest.php/User/' + id + '/Picture'
         const res = await axios.get(URL, {
             headers: {
@@ -302,7 +305,6 @@ export const getPhotoProfile = (server, id, session_token) => async (dispatch) =
         })
 
     } catch (error) {
-        console.log(error)
         dispatch({
             type: ERROR, payload: error.message
 
@@ -321,7 +323,6 @@ export const getItem = (type, server, session_token) => async (dispatch) => {
                 'App-Token': '8HLily4SwCo3yJv3NI3nTwowB3EFhAMuL9itKPQB'
             }
         })
-        console.log('API',type,res.status)
 
         if (type == 'Computer') {
             dispatch({ type: COMPUTER, payload: res.data })
@@ -360,7 +361,6 @@ export const getItem = (type, server, session_token) => async (dispatch) => {
         }else if(type=='Simcards'){
             dispatch({type:DEVICESSIMCARD,payload:res.data})
         } else if (type == 'Ticket') {
-            console.log('ticket')
 
             dispatch({ type: TICKET, payload: res.data })
         }else if(type=='Domain'){
@@ -384,7 +384,6 @@ export const getItem = (type, server, session_token) => async (dispatch) => {
         }
         
     } catch (error) {
-        console.log(error,type)
         if(error.response.status==401){
             dispatch({type:VAL,payload:false})
         }else{
@@ -400,7 +399,6 @@ export const getItem = (type, server, session_token) => async (dispatch) => {
 
 export const addItem = (json, server, session_token, type) => async (dispatch) => {
     try {
-      console.log(json)
       const URL = server + '/apirest.php/' + type;
 
       var config = {
@@ -418,11 +416,9 @@ export const addItem = (json, server, session_token, type) => async (dispatch) =
         
         
         if (res.status == 201) {
-            console.log('GUARDADO')
             dispatch({ type: MSJ, payload: 'Peticion creada' })
         }
     } catch (error) {
-        console.log(error.response || error)
         
             dispatch({
                 type: ERROR, payload: error.message
@@ -430,5 +426,27 @@ export const addItem = (json, server, session_token, type) => async (dispatch) =
             })
         
        
+    }
+}
+
+export const killsession =(session_token,server)=>async(dispatch)=>{
+    try {
+        const URL = server + '/apirest.php/killSession' ;
+        const res = await axios.get(URL, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Session-Token': `${session_token.session_token}`,
+                'App-Token': '8HLily4SwCo3yJv3NI3nTwowB3EFhAMuL9itKPQB'
+            }
+        })
+        if(res.status==200){
+            dispatch({type:KILLSESION,payload:null})
+        }
+    } catch (error) {
+
+        dispatch({
+            type: ERROR, payload: 'Error al cerrar sesión'
+
+        })
     }
 }

@@ -48,7 +48,6 @@ export const NuevaPeticion = () => {
         let hour = 0;
         let min = 0;
         /*for (let index = 15; index < 55; index++) {
-            console.log(index)
             min = index+5;
             count1++;
             if(count1==13){
@@ -258,7 +257,6 @@ export const NuevaPeticion = () => {
     //editor
     const editorInitializedCallback = () => {
         richText.current?.registerToolbar(function (items) {
-            // console.log('Toolbar click, selected items (insert end callback):', items);
         });
     }
     const onChange = (event, selectedDate) => {

@@ -35,10 +35,12 @@ export const Main = () => {
             dispatch(getConfig(server,auth))
 
 
+        }else{
+            setAuth(false)
         }
 
 
-    })
+    },[auth])
     return (
         <NavigationContainer >
                 {
