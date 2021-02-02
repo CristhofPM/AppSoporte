@@ -16,7 +16,7 @@ const init = {
     },
     profile_photo: null,
     config:{},
-
+    countTicket:{},
 
     computer: {},
     monitor: {},
@@ -58,7 +58,7 @@ const ERROR = 'ERROR';
 const GET_PROFILE = 'GET_PROFILE';
 const FULL_SESSION = 'FULL_SESSION';
 const PROFILE_PHOTO = 'PROFILE_PHOTO';
-
+const COUNT = 'COUNT';
 const KILLSESION = 'KILLSESION'
 
 const COMPUTER = 'COMPUTER';
@@ -138,6 +138,8 @@ export const AppModule = (state = init, data) => {
             return {...state,Location:data.payload}
         case PERIPHERAL:
             return { ...state, peripheral: data.payload }
+        case COUNT:
+            return {...state,countTicket:data.payload}
         case PHONE:
             return { ...state, phone: data.payload }
         case PRINTER:
@@ -178,6 +180,24 @@ export const AppModule = (state = init, data) => {
     }
 
 }
+
+export const getCount=(server,type,session_token)=>async(dispatch)=>{
+    try {
+        let URL = server+'/apirest.php/search/'+type;
+        const res = await axios.get(URL, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Session-Token': `${session_token.session_token}`,
+                'App-Token': '8HLily4SwCo3yJv3NI3nTwowB3EFhAMuL9itKPQB'
+
+            }
+        })
+        dispatch({type:COUNT,payload:res.data})
+
+    } catch (error) {
+        
+    }
+}
 export const clearMsj = () => async (dispatch) => {
     dispatch({ type: ERROR, payload: null })
 }
@@ -206,6 +226,7 @@ export const initSession = (user, pass, server) => async (dispatch) => {
         }
         dispatch({ type: INIT_SESSION, payload: response })
     } catch (error) {
+        console.log(error)
         if(error.response.status==401){
             dispatch({
                 type: ERROR, payload: 'Usuario y/o contraseña incorrecta'
@@ -313,9 +334,16 @@ export const getPhotoProfile = (server, id, session_token) => async (dispatch) =
 }
 
 //obtiene un item
-export const getItem = (type, server, session_token) => async (dispatch) => {
+export const getItem = (type, server, session_token,count,val) => async (dispatch) => {
     try {
-        const URL = server + '/apirest.php/' + type
+        let URL;
+        if(val){
+             URL = server + '/apirest.php/' + type+'/?range=0-'+count;
+
+        }else{
+             URL = server + '/apirest.php/' + type
+
+        }
         const res = await axios.get(URL, {
             headers: {
                 'Content-Type': 'application/json',
@@ -323,7 +351,7 @@ export const getItem = (type, server, session_token) => async (dispatch) => {
                 'App-Token': '8HLily4SwCo3yJv3NI3nTwowB3EFhAMuL9itKPQB'
             }
         })
-
+        console.log('API',type,res.status)
         if (type == 'Computer') {
             dispatch({ type: COMPUTER, payload: res.data })
         } else if (type == 'Monitor') {

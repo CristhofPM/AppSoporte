@@ -3,16 +3,16 @@ import { View, Text, StyleSheet, ScrollView, TextInput, KeyboardAvoidingView, Al
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Button, Divider, Icon, ListItem, } from 'react-native-elements'
 import RNPickerSelect from 'react-native-picker-select';
-import { useSelector,useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { actions, RichEditor, RichToolbar } from 'react-native-pell-rich-editor'
-import {addItem,clearMsj,clearMsjG, getItem} from '../redux/app'
+import { addItem, clearMsj, clearMsjG, getItem } from '../redux/app'
 export const NuevaPeticion = () => {
     const richText = React.createRef();
-    const  dispatch = useDispatch();
+    const dispatch = useDispatch();
     //load
-    const [load,setLoad]=useState(false);
-    const { category, user, group, supplier, RequestType, Location, ticket, error,msj,
-        config,session } = useSelector((store) => store.app)
+    const [load, setLoad] = useState(false);
+    const { category, user, group, supplier, RequestType, Location, ticket, error, msj,
+        config, session, countTicket } = useSelector((store) => store.app)
     //categoria api
     const [cat, setCat] = useState([{ label: 'Sin datos', value: 0 }])
     //usuarios api
@@ -119,7 +119,7 @@ export const NuevaPeticion = () => {
     //titulo
     const [titulo, setTitulo] = useState('');
     //descripcion
-    const [descripcion,setDescripcion]=useState('');
+    const [descripcion, setDescripcion] = useState('');
     //tipo de vinculacion
     const [tipoVin, setTipoVin] = useState(0);
     //id vinculados
@@ -127,12 +127,12 @@ export const NuevaPeticion = () => {
     //elementos asociados
     const [elementsId, setElementId] = useState('');
 
-    const ok =()=>{
+    const ok = () => {
         dispatch(clearMsjG())
-        dispatch(getItem('Ticket',session.server,session.session_token))
+        dispatch(getItem('Ticket', session.server, session.session_token, countTicket.totalcount + 1, true))
     }
     useEffect(() => {
-        if(error){
+        if (error) {
             setLoad(false)
             Alert.alert('Error', error, [
                 {
@@ -142,7 +142,7 @@ export const NuevaPeticion = () => {
                 }
             ])
         }
-        if(msj){
+        if (msj) {
             setLoad(false)
             Alert.alert('Exito', msj, [
                 {
@@ -253,7 +253,7 @@ export const NuevaPeticion = () => {
 
         json()
 
-    }, [category, user, group, supplier, RequestType, Location, ticket,config,session,error,msj])
+    }, [category, user, group, supplier, RequestType, Location, ticket, config, session, error, msj])
     //editor
     const editorInitializedCallback = () => {
         richText.current?.registerToolbar(function (items) {
@@ -286,54 +286,56 @@ export const NuevaPeticion = () => {
     };
 
     //click btn
-    const saveTicket = ()=>{
-        if(titulo!='' && descripcion!=''){
+    const saveTicket = () => {
+        if (titulo != '' && descripcion != '') {
             setLoad(true);
             var raw = JSON.stringify({
-                "input":{
-                    "actiontime":0,
-                    "begin_waiting_date":null,
-                    "close_delay_stat":0,
-                    "closedate":null,
+                "input": {
+                    "actiontime": 0,
+                    "begin_waiting_date": null,
+                    "close_delay_stat": 0,
+                    "closedate": null,
                     "content": descripcion,
-                    "date":"2021-01-21 01:02:06",
-                    "date_creation":"2021-01-21 01:02:06",
-                    "date_mod":"2021-01-21 01:02:06",
-                    "global_validation":1,
-                    "impact":im,
-                    "internal_time_to_own":null,
-                    "internal_time_to_resolve":null,
-                    "is_deleted":0,
-                    "itilcategories_id":categoria,
-                    "locations_id":loc,
-                    "name":titulo,
-                    "ola_ttr_begin_date":null,
-                    "ola_waiting_duration":0,
-                    "olalevels_id_ttr":0,
-                    "olas_id_tto":0,
-                    "olas_id_ttr":0,
-                    "priority":prio,
-                    "requesttypes_id":rt,
-                    "sla_waiting_duration":0,
-                    "slalevels_id_ttr":0,
-                    "slas_id_tto":0,
-                    "slas_id_ttr":0,
-                    "solve_delay_stat":0,
-                    "solvedate":null,
-                    "status":1,
-                    "takeintoaccount_delay_stat":0,
-                    "time_to_own":null,
-                    "time_to_resolve":null,
-                    "type":2,"urgency":urgen,
-                    "users_id_lastupdater":6,
-                    "users_id_recipient":6,
-                    "validation_percent":0,
-                    "waiting_duration":0}});
-            if(session){
-                dispatch(addItem(raw,session.server,session.session_token,'Ticket'))
+                    "date": "2021-01-21 01:02:06",
+                    "date_creation": "2021-01-21 01:02:06",
+                    "date_mod": "2021-01-21 01:02:06",
+                    "global_validation": 1,
+                    "impact": im,
+                    "internal_time_to_own": null,
+                    "internal_time_to_resolve": null,
+                    "is_deleted": 0,
+                    "itilcategories_id": categoria,
+                    "locations_id": loc,
+                    "name": titulo,
+                    "ola_ttr_begin_date": null,
+                    "ola_waiting_duration": 0,
+                    "olalevels_id_ttr": 0,
+                    "olas_id_tto": 0,
+                    "olas_id_ttr": 0,
+                    "priority": prio,
+                    "requesttypes_id": rt,
+                    "sla_waiting_duration": 0,
+                    "slalevels_id_ttr": 0,
+                    "slas_id_tto": 0,
+                    "slas_id_ttr": 0,
+                    "solve_delay_stat": 0,
+                    "solvedate": null,
+                    "status": 1,
+                    "takeintoaccount_delay_stat": 0,
+                    "time_to_own": null,
+                    "time_to_resolve": null,
+                    "type": 2, "urgency": urgen,
+                    "users_id_lastupdater": 6,
+                    "users_id_recipient": 6,
+                    "validation_percent": 0,
+                    "waiting_duration": 0
+                }
+            });
+            if (session) {
+                dispatch(addItem(raw, session.server, session.session_token, 'Ticket'))
 
             }
-        }else{
+        } else {
             setLoad(false)
             Alert.alert('Campos incompletos');
         }
@@ -449,7 +451,6 @@ export const NuevaPeticion = () => {
                 </View>
                 <View style={{ flexDirection: 'column', padding: 10 }}>
                     <Divider />
-
                     <ListItem bottomDivider>
                         <ListItem.Content>
                             <ListItem.Title>Solicitante</ListItem.Title>
@@ -471,7 +472,6 @@ export const NuevaPeticion = () => {
                             <RNPickerSelect
                                 key='SoliGroup'
                                 style={{ viewContainer: styles.select }}
-
                                 placeholder={{
                                     label: '----------',
                                     value: solicitanteGroup,
@@ -487,7 +487,6 @@ export const NuevaPeticion = () => {
                         <ListItem.Content>
                             <ListItem.Title>Observador</ListItem.Title>
                             <Icon reverse size={15} name='person' color='black' type='ionicon' />
-
                             <RNPickerSelect
                                 style={{ viewContainer: styles.select }}
 
@@ -500,12 +499,10 @@ export const NuevaPeticion = () => {
                                 onValueChange={text => setObservador(text)}
                                 items={users}
                                 value={observador}
-
                             />
                             <Icon reverse size={15} name='people' color='black' type='ionicon' />
                             <RNPickerSelect
                                 style={{ viewContainer: styles.select }}
-
                                 key='GrupoObs'
                                 placeholder={{
                                     label: '----------',
@@ -515,12 +512,9 @@ export const NuevaPeticion = () => {
                                 onValueChange={text => setGroupOb(text)}
                                 items={groupS}
                                 value={groupOb}
-
                             />
                         </ListItem.Content>
-
                     </ListItem>
-
                     <ListItem bottomDivider>
                         <ListItem.Content>
                             <ListItem.Title>Asignado a:</ListItem.Title>
@@ -528,7 +522,6 @@ export const NuevaPeticion = () => {
                             <RNPickerSelect
                                 key='Asignado'
                                 style={{ viewContainer: styles.select }}
-
                                 placeholder={{
                                     label: '----------',
                                     value: asignado,
@@ -542,7 +535,6 @@ export const NuevaPeticion = () => {
                             <Icon reverse size={15} name='dolly' color='black' type='font-awesome-5' />
                             <RNPickerSelect
                                 style={{ viewContainer: styles.select }}
-
                                 key='Suppl'
                                 placeholder={{
                                     label: '----------',
@@ -551,7 +543,6 @@ export const NuevaPeticion = () => {
                                 }}
                                 onValueChange={text => setASuppl(text)}
                                 items={suppl}
-
                             />
                         </ListItem.Content>
                     </ListItem>
@@ -561,7 +552,6 @@ export const NuevaPeticion = () => {
                         <RNPickerSelect
                             key='estado'
                             style={{ viewContainer: styles.select }}
-
                             placeholder={{
                                 label: '----------',
                                 value: est,
@@ -575,7 +565,6 @@ export const NuevaPeticion = () => {
                                 { label: 'En espera', value: 4, inputLabel: 'En espera' },
                                 { label: 'Resuelto', value: 5, inputLabel: 'Resuelto' },
                                 { label: 'Cerrado', value: 6, inputLabel: 'Cerrado' },
-
                             ]}
                             value={est}
                         />
@@ -585,7 +574,6 @@ export const NuevaPeticion = () => {
                         <Text style={styles.text}>Fuente solicitante</Text>
                         <RNPickerSelect
                             style={{ viewContainer: styles.select }}
-
                             key='Solicitante'
                             placeholder={{
                                 label: '----------',
@@ -602,7 +590,6 @@ export const NuevaPeticion = () => {
                         <Text style={styles.text}>Urgencia</Text>
                         <RNPickerSelect
                             style={{ viewContainer: styles.select }}
-
                             key='Urgencia'
                             placeholder={{
                                 label: '----------',
@@ -649,7 +636,7 @@ export const NuevaPeticion = () => {
                         />
                     </View>
 
-                    
+
                     <Divider />
 
 
@@ -762,7 +749,6 @@ export const NuevaPeticion = () => {
                         />
 
                     </View>
-
                     <View style={{ flexDirection: 'column', marginTop: 20 }}>
                         <Divider />
                         <Text style={styles.text}>Tickets vinculados</Text>
@@ -797,17 +783,13 @@ export const NuevaPeticion = () => {
                             textInputProps={{ placeholderTextColor: 'blue' }}
                         />
                     </View>
-
-
                     <View style={{ flexDirection: 'column', height: 50 }}>
-                        <Button title='Guardar' 
-                        loading={load} 
-                        disabled={load}
-                        onPress={()=>saveTicket()}>
+                        <Button title='Guardar'
+                            loading={load}
+                            disabled={load}
+                            onPress={() => saveTicket()}>
                         </Button>
                     </View>
-
-
                 </View>
             </ScrollView>
         </View>

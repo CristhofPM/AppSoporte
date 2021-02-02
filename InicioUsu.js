@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { Inicio } from './pages/Inicio'
 import { Activos } from './pages/Activos';
-import { Peticiones } from './pages/Peticiones';
+import {  NavigationInside} from './NavigationInside';
 import { NuevaPeticion } from './pages/NuevaPeticion';
 import { Planificacion } from './pages/Planificacion';
 import { Problemas } from './pages/Problemas';
@@ -11,7 +11,7 @@ import { Cambios } from './pages/Cambios'
 import { Estadisticas } from './pages/Estadisiticas'
 import { getItem,killsession } from './redux/app'
 import { useDispatch, useSelector } from 'react-redux';
-import { Alert, Text } from 'react-native';
+import { Alert, Text, View } from 'react-native';
 import { Avatar, Overlay,Button } from 'react-native-elements'
 const Drawer = createDrawerNavigator();
 
@@ -65,8 +65,10 @@ export const InicioUsu = () => {
     return (
         <>
             <Overlay isVisible={visible} onBackdropPress={toggleOverlay}>
+                <View>
                 <Text>Hello from Overlay!</Text>
                 <Button title='Cerrar sesión' onPress={()=>cerrar()} ></Button>
+                </View>
             </Overlay>
             <Drawer.Navigator initialRouteName='Peticiones' screenOptions={{
                 headerShown: true, headerRight: () => (
@@ -79,7 +81,7 @@ export const InicioUsu = () => {
                 },
             }}>
 
-                <Drawer.Screen name='Peticiones' component={Peticiones}></Drawer.Screen>
+                <Drawer.Screen name='Peticiones' component={NavigationInside}></Drawer.Screen>
                 <Drawer.Screen name='Nueva Peticion' component={NuevaPeticion}></Drawer.Screen>
                 <Drawer.Screen name='Planificacion' component={Planificacion}></Drawer.Screen>
                 <Drawer.Screen name='Problemas' component={Problemas}></Drawer.Screen>

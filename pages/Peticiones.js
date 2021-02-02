@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
 import { View, ScrollView, Text, ActivityIndicator } from "react-native"
 import { ListItem, Icon } from "react-native-elements"
-export const Peticiones = () => {
+export const Peticiones = ({ navigation }) => {
     const peticiones = useSelector((store) => store.app.ticket)
     const config = useSelector((store) => store.app.config)
     const [load, setLoad] = useState(true)
@@ -14,6 +14,7 @@ export const Peticiones = () => {
     const [pri5, setPri5] = useState('black')
     const [pri6, setPri6] = useState('black')
     useEffect(() => {
+        console.log('ACTUALIZA PETICIONES')
         if (peticiones) {
             setLoad(false)
             setPet(peticiones)
@@ -97,11 +98,13 @@ export const Peticiones = () => {
         <View style={{ flexDirection: 'column', flex: 1, backgroundColor: 'white' }}>
             <ScrollView style={{ padding: 20 }}>
                 {
-                load ? (<ActivityIndicator size="large" color="#9EC9F0" />) : (null)
-            }
+                    load ? (<ActivityIndicator size="large" color="#9EC9F0" />) : (null)
+                }
                 {
                     pet.map((l, i) => (
-                        <ListItem key={i} bottomDivider>
+                        <ListItem key={i} bottomDivider onPress={() => navigation.navigate('Detalle', {
+                            ticket:l
+                          })}>
                             <ListItem.Content>
                                 <ListItem.Title>{l.name}</ListItem.Title>
                                 <ListItem.Subtitle>{l.time_to_resolve}</ListItem.Subtitle>
