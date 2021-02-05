@@ -5,6 +5,8 @@ const init = {
     session: {
         session_token: '',
         server: '',
+        app_token: '',
+        valTok: false
 
     },
     error: null,
@@ -15,8 +17,8 @@ const init = {
         session: {}
     },
     profile_photo: null,
-    config:{},
-    countTicket:{},
+    config: {},
+    countTicket: {},
 
     computer: {},
     monitor: {},
@@ -28,28 +30,37 @@ const init = {
     dcroom: {},
     rack: {},
     enclosure: {},
-    cluster:{},
-    pdu:{},
-    passivedcequipment:{},
-    Item_DeviceSimcard:{},
-    server_rom:{},
-    lineas:{},
-    domains:{},
-    licenses:{},
-    certificates:{},
+    cluster: {},
+    pdu: {},
+    passivedcequipment: {},
+    Item_DeviceSimcard: {},
+    server_rom: {},
+    lineas: {},
+    domains: {},
+    licenses: {},
+    certificates: {},
     ticket: [],
-    cartridgeitem:{},
-    consumableitem:{},
+    cartridgeitem: {},
+    consumableitem: {},
     app_token: '',
     msj: '',
-    val:null,
-    category:[],
-    state:[],
-    user:[],
-    group:[],
-    supplier:[],
-    RequestType:[],
-    Location:[]
+    val: null,
+    category: [],
+    state: [],
+    user: [],
+    group: [],
+    supplier: [],
+    RequestType: [],
+    Location: [],
+
+    //ticket subitem
+    ticketValidation: {},
+    ticketCost: {},
+    problem_ticket: {},
+    change_ticket: {},
+    solution: {},
+    followup: {},
+    ticketTask:{}
 
 }
 
@@ -71,7 +82,7 @@ const SOFTWARE = 'SOFTWARE';
 const DCROOM = 'DCROOM';
 const RACK = 'RACK';
 const ENCLOSURE = 'ENCLOSURE';
-const CARTRIDGE ='CARTRIDGE';
+const CARTRIDGE = 'CARTRIDGE';
 const CONSUMABLE = 'CONSUMABLE';
 const DEVICESSIMCARD = 'DEVICESSIMCARD';
 const PDU = 'PDU';
@@ -94,6 +105,16 @@ const MSJ = 'MSJ';
 const TICKET = 'TICKET';
 const VAL = 'VAL';
 const CONFIG = 'CONFIG';
+
+
+//ticket type
+const TICKETVALIDATION = 'TICKETVALIDATION';
+const TICKETCOST = 'TICKETCOST';
+const PROBLEM_TICKET = 'PROBLEM_TICKET';
+const CHANGE_TICKET = 'CHANGE_TICKET';
+const ITILSOLUTION = 'ITILSOLUTION';
+const ITIlFOLLOWUP = 'ITIlFOLLOWUP';
+const TICKETTASK='TICKETTASK';
 export const AppModule = (state = init, data) => {
     switch (data.type) {
         case INIT_SESSION:
@@ -109,37 +130,37 @@ export const AppModule = (state = init, data) => {
         case COMPUTER:
             return { ...state, computer: data.payload }
         case CARTRIDGE:
-            return {...state,cartridgeitem:data.payload}
+            return { ...state, cartridgeitem: data.payload }
         case PASSIVEDCEQUIPMENT:
-            return {...state,passivedcequipment:data.payload}
+            return { ...state, passivedcequipment: data.payload }
         case CONSUMABLE:
-            return {...state,consumableitem:data.payload}
+            return { ...state, consumableitem: data.payload }
         case MONITOR:
             return { ...state, monitor: data.payload }
         case NETWORKE:
             return { ...state, networkE: data.payload }
         case DEVICESSIMCARD:
-            return {...state,Item_DeviceSimcard:data.payload}
+            return { ...state, Item_DeviceSimcard: data.payload }
         case CLUSTER:
-            return {...state,cluster:data.payload}
+            return { ...state, cluster: data.payload }
         case SUPPLIER:
-            return {...state,supplier:data.payload}
+            return { ...state, supplier: data.payload }
         case USER:
-            return {...state,user:data.payload}
+            return { ...state, user: data.payload }
         case GROUP:
-            return {...state,group:data.payload}
+            return { ...state, group: data.payload }
         case STATE:
-            return {...state,state:data.payload}
+            return { ...state, state: data.payload }
         case REQUESTTYPE:
-            return {...state,RequestType:data.payload}
+            return { ...state, RequestType: data.payload }
         case VAL:
-            return {...state,val:data.payload}
+            return { ...state, val: data.payload }
         case LOCATION:
-            return {...state,Location:data.payload}
+            return { ...state, Location: data.payload }
         case PERIPHERAL:
             return { ...state, peripheral: data.payload }
         case COUNT:
-            return {...state,countTicket:data.payload}
+            return { ...state, countTicket: data.payload }
         case PHONE:
             return { ...state, phone: data.payload }
         case PRINTER:
@@ -147,7 +168,7 @@ export const AppModule = (state = init, data) => {
         case SOFTWARE:
             return { ...state, software: data.payload }
         case PDU:
-            return {...state,pdu:data.payload}
+            return { ...state, pdu: data.payload }
         case DCROOM:
             return { ...state, dcroom: data.payload }
         case RACK:
@@ -155,23 +176,37 @@ export const AppModule = (state = init, data) => {
         case ENCLOSURE:
             return { ...state, enclosure: data.payload }
         case SERVERROOM:
-            return {...state,server_rom:data.payload}
+            return { ...state, server_rom: data.payload }
         case LINES:
-            return {...state,lines:data.payload}
+            return { ...state, lines: data.payload }
         case DOMAINS:
-            return {...state,domains:data.payload}
+            return { ...state, domains: data.payload }
         case LICENSES:
-            return {...state,licenses:data.payload}
+            return { ...state, licenses: data.payload }
         case CERTIFICATES:
-            return {...state,certificates:data.payload}
+            return { ...state, certificates: data.payload }
         case CONFIG:
-            return {...state,config:data.payload}
+            return { ...state, config: data.payload }
         case TICKET:
             return { ...state, ticket: data.payload }
         case CATEGORY:
-            return {...state,category:data.payload}
+            return { ...state, category: data.payload }
         case MSJ:
             return { ...state, msj: data.payload }
+        case TICKETVALIDATION:
+            return { ...state, ticketValidation: data.payload }
+        case TICKETCOST:
+            return { ...state, ticketCost: data.payload }
+        case PROBLEM_TICKET:
+            return { ...state, problem_ticket: data.payload }
+        case CHANGE_TICKET:
+            return { ...state, change_ticket: data.payload }
+        case ITILSOLUTION:
+            return { ...state, solution: data.payload }
+        case TICKETTASK:
+            return {...state,ticketTask:data.payload}
+        case ITIlFOLLOWUP:
+            return { ...state, followup: data.payload }
         case KILLSESION:
             return init;
         default:
@@ -181,21 +216,33 @@ export const AppModule = (state = init, data) => {
 
 }
 
-export const getCount=(server,type,session_token)=>async(dispatch)=>{
+export const getCount = (server, type, session_token, app_token, val) => async (dispatch) => {
     try {
-        let URL = server+'/apirest.php/search/'+type;
-        const res = await axios.get(URL, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Session-Token': `${session_token.session_token}`,
-                'App-Token': '8HLily4SwCo3yJv3NI3nTwowB3EFhAMuL9itKPQB'
+        let URL = server + '/apirest.php/search/' + type;
+        let res;
 
-            }
-        })
-        dispatch({type:COUNT,payload:res.data})
+        if (val) {
+            res = await axios.get(URL, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Session-Token': `${session_token.session_token}`,
+                    'App-Token': `${app_token}`
+
+                }
+            })
+        } else {
+            res = await axios.get(URL, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Session-Token': `${session_token.session_token}`
+                }
+            })
+        }
+
+        dispatch({ type: COUNT, payload: res.data })
 
     } catch (error) {
-        
+
     }
 }
 export const clearMsj = () => async (dispatch) => {
@@ -205,56 +252,79 @@ export const clearMsjG = () => async (dispatch) => {
     dispatch({ type: MSJ, payload: null })
 }
 //iniciar sesion
-export const initSession = (user, pass, server) => async (dispatch) => {
+export const initSession = (user, pass, server, app_token, val) => async (dispatch) => {
     try {
         //const token = Buffer.from(`${user}:${pass}`, 'utf8').toString('base64')
         const token = base64.encode(`${user}:${pass}`);
 
         const URL = server + '/apirest.php/initSession'
+        let res;
+        if (val) {
+            res = await axios.get(URL, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Basic ${token}`,
+                    'App-Token': `${app_token}`
+                }
+            })
+        } else {
+            res = await axios.get(URL, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Basic ${token}`
+                }
+            })
+        }
 
-        const res = await axios.get(URL, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Basic ${token}`,
-                'App-Token': '8HLily4SwCo3yJv3NI3nTwowB3EFhAMuL9itKPQB'
-            }
-        })
         const response = {
             session_token: res.data,
             server: server,
+            app_token: app_token,
+            valTok: val
 
         }
         dispatch({ type: INIT_SESSION, payload: response })
     } catch (error) {
         console.log(error)
-        if(error.response.status==401){
+        if (error.response.status == 401) {
             dispatch({
                 type: ERROR, payload: 'Usuario y/o contraseña incorrecta'
-    
+
             })
-        }else{
+        } else {
             dispatch({
                 type: ERROR, payload: 'Error al conectar al servidor Inicio'
-    
+
             })
         }
-        
+
 
     }
 }
 
 //obtener la configuracion
-export const getConfig =(server,session_token)=>async(dispatch)=>{
+export const getConfig = (server, session_token, app_token, val) => async (dispatch) => {
     try {
         const URL = server + '/apirest.php/getGlpiConfig';
-        const res = await axios.get(URL, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Session-Token': `${session_token.session_token}`,
-                'App-Token': '8HLily4SwCo3yJv3NI3nTwowB3EFhAMuL9itKPQB'
+        let res;
+        if (val) {
+            res = await axios.get(URL, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Session-Token': `${session_token.session_token}`,
+                    'App-Token': `${app_token}`
 
-            }
-        })
+                }
+            })
+        } else {
+            res = await axios.get(URL, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Session-Token': `${session_token.session_token}`
+                }
+            })
+        }
+
         dispatch({ type: CONFIG, payload: res.data })
     } catch (error) {
         dispatch({
@@ -265,18 +335,30 @@ export const getConfig =(server,session_token)=>async(dispatch)=>{
 }
 
 //obtiene el perfil 
-export const getProfile = (server, session_token) => async (dispatch) => {
+export const getProfile = (server, session_token, app_token, val) => async (dispatch) => {
     try {
 
         const URL = server + '/apirest.php/getActiveProfile';
-        const res = await axios.get(URL, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Session-Token': `${session_token.session_token}`,
-                'App-Token': '8HLily4SwCo3yJv3NI3nTwowB3EFhAMuL9itKPQB'
+        let res;
+        if (val) {
+            res = await axios.get(URL, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Session-Token': `${session_token.session_token}`,
+                    'App-Token': `${app_token}`
 
-            }
-        })
+                }
+            })
+        } else {
+            res = await axios.get(URL, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Session-Token': `${session_token.session_token}`,
+
+                }
+            })
+        }
+
         dispatch({ type: GET_PROFILE, payload: res.data.active_profile })
     } catch (error) {
         dispatch({
@@ -287,21 +369,32 @@ export const getProfile = (server, session_token) => async (dispatch) => {
 }
 
 //obtiene la sesion
-export const getfullSession = (server, session_token) => async (dispatch) => {
+export const getfullSession = (server, session_token, app_token, val) => async (dispatch) => {
     try {
 
         const URL = server + '/apirest.php/getFullSession';
-        const res = await axios.get(URL, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Session-Token': `${session_token.session_token}`,
-                'App-Token': '8HLily4SwCo3yJv3NI3nTwowB3EFhAMuL9itKPQB'
+        let res;
+        if (val) {
+            res = await axios.get(URL, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Session-Token': `${session_token.session_token}`,
+                    'App-Token': `${app_token}`
 
-            }
-        })
+                }
+            })
+        } else {
+            res = await axios.get(URL, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Session-Token': `${session_token.session_token}`,
+
+                }
+            })
+        }
+
         if (res.status == 200) {
             dispatch({ type: FULL_SESSION, payload: res.data.session })
-
         }
     } catch (error) {
         dispatch({
@@ -313,17 +406,28 @@ export const getfullSession = (server, session_token) => async (dispatch) => {
 
 
 //obtiene la foto
-export const getPhotoProfile = (server, id, session_token) => async (dispatch) => {
+export const getPhotoProfile = (server, id, session_token, app_token, val) => async (dispatch) => {
     try {
         const URL = server + '/apirest.php/User/' + id + '/Picture'
-        const res = await axios.get(URL, {
-            headers: {
-                'Content-Type': 'image/png',
-                'Session-Token': `${session_token.session_token}`,
-                'App-Token': '8HLily4SwCo3yJv3NI3nTwowB3EFhAMuL9itKPQB'
+        let res;
+        if (val) {
+            res = await axios.get(URL, {
+                headers: {
+                    'Content-Type': 'image/png',
+                    'Session-Token': `${session_token.session_token}`,
+                    'App-Token': `${app_token}`
 
-            }
-        })
+                }
+            })
+        } else {
+            res = await axios.get(URL, {
+                headers: {
+                    'Content-Type': 'image/png',
+                    'Session-Token': `${session_token.session_token}`
+                }
+            })
+        }
+
 
     } catch (error) {
         dispatch({
@@ -334,24 +438,36 @@ export const getPhotoProfile = (server, id, session_token) => async (dispatch) =
 }
 
 //obtiene un item
-export const getItem = (type, server, session_token,count,val) => async (dispatch) => {
+export const getItem = (type, server, session_token, count, val, app_token, val1) => async (dispatch) => {
     try {
+        console.log(count)
         let URL;
-        if(val){
-             URL = server + '/apirest.php/' + type+'/?range=0-'+count;
+        if (val) {
+            URL = server + '/apirest.php/' + type + '/?range=0-' + count;
 
-        }else{
-             URL = server + '/apirest.php/' + type
+        } else {
+            URL = server + '/apirest.php/' + type
 
         }
-        const res = await axios.get(URL, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Session-Token': `${session_token.session_token}`,
-                'App-Token': '8HLily4SwCo3yJv3NI3nTwowB3EFhAMuL9itKPQB'
-            }
-        })
-        console.log('API',type,res.status)
+        let res;
+        if (val1) {
+            res = await axios.get(URL, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Session-Token': `${session_token.session_token}`,
+                    'App-Token': `${app_token}`
+                }
+            })
+        } else {
+            res = await axios.get(URL, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Session-Token': `${session_token.session_token}`
+                }
+            })
+        }
+        console.log('API', type, res.status)
+
         if (type == 'Computer') {
             dispatch({ type: COMPUTER, payload: res.data })
         } else if (type == 'Monitor') {
@@ -366,109 +482,132 @@ export const getItem = (type, server, session_token,count,val) => async (dispatc
             dispatch({ type: PRINTER, payload: res.data })
         } else if (type == 'Software') {
             dispatch({ type: SOFTWARE, payload: res.data })
-        } else if(type=='Licenses'){
-            dispatch({type:LICENSES,payload:res.data})
-        }if(type=='Certificate'){
-            dispatch({type:CERTIFICATES,payload:res.data})
-        }else if(type=='Line'){
-            dispatch({type:LINES,payload:res.data})
-        }else if (type == 'DCRoom') {
+        } else if (type == 'Licenses') {
+            dispatch({ type: LICENSES, payload: res.data })
+        } if (type == 'Certificate') {
+            dispatch({ type: CERTIFICATES, payload: res.data })
+        } else if (type == 'Line') {
+            dispatch({ type: LINES, payload: res.data })
+        } else if (type == 'DCRoom') {
             dispatch({ type: DCROOM, payload: res.data })
         } else if (type == 'Rack') {
             dispatch({ type: RACK, payload: res.data })
         } else if (type == 'Enclosure') {
             dispatch({ type: ENCLOSURE, payload: res.data })
-        }else if(type=='cartridgeitem'){
-            dispatch({type:CARTRIDGE,payload:res.data})
-        }else if(type=='consumableitem'){
-            dispatch({type:CONSUMABLE,payload:res.data})
-        }else if(type=='PDU'){
-            dispatch({type:PDU,payload:res.data})
-        }else if(type=='PassiveDCEquipment'){
-            dispatch({type:PASSIVEDCEQUIPMENT,payload:res.data})
-        }else if(type=='Simcards'){
-            dispatch({type:DEVICESSIMCARD,payload:res.data})
+        } else if (type == 'cartridgeitem') {
+            dispatch({ type: CARTRIDGE, payload: res.data })
+        } else if (type == 'consumableitem') {
+            dispatch({ type: CONSUMABLE, payload: res.data })
+        } else if (type == 'PDU') {
+            dispatch({ type: PDU, payload: res.data })
+        } else if (type == 'PassiveDCEquipment') {
+            dispatch({ type: PASSIVEDCEQUIPMENT, payload: res.data })
+        } else if (type == 'Simcards') {
+            dispatch({ type: DEVICESSIMCARD, payload: res.data })
         } else if (type == 'Ticket') {
 
             dispatch({ type: TICKET, payload: res.data })
-        }else if(type=='Domain'){
-            dispatch({type:DOMAINS,payload:res.data})
-        }else if(type=='Cluster'){
-            dispatch({type:CLUSTER,payload:res.data})
-        }else if(type=='itilcategory'){
-            dispatch({type:CATEGORY,payload:res.data})
-        }else if(type=='state'){
-            dispatch({type:STATE,payload:res.data})
-        }else if(type=='user'){
-            dispatch({type:USER,payload:res.data})
-        }else if(type=='group'){
-            dispatch({type:GROUP,payload:res.data})
-        }else if(type=='Supplier'){
-            dispatch({type:SUPPLIER,payload:res.data})
-        }else if(type=='RequestType'){
-            dispatch({type:REQUESTTYPE,payload:res.data})
-        }else if(type=='Location'){
-            dispatch({type:LOCATION,payload:res.data})
+        } else if (type == 'Domain') {
+            dispatch({ type: DOMAINS, payload: res.data })
+        } else if (type == 'Cluster') {
+            dispatch({ type: CLUSTER, payload: res.data })
+        } else if (type == 'itilcategory') {
+            dispatch({ type: CATEGORY, payload: res.data })
+        } else if (type == 'state') {
+            dispatch({ type: STATE, payload: res.data })
+        } else if (type == 'user') {
+            dispatch({ type: USER, payload: res.data })
+        } else if (type == 'group') {
+            dispatch({ type: GROUP, payload: res.data })
+        } else if (type == 'Supplier') {
+            dispatch({ type: SUPPLIER, payload: res.data })
+        } else if (type == 'RequestType') {
+            dispatch({ type: REQUESTTYPE, payload: res.data })
+        } else if (type == 'Location') {
+            dispatch({ type: LOCATION, payload: res.data })
         }
-        
+
     } catch (error) {
-        if(error.response.status==401){
-            dispatch({type:VAL,payload:false})
-        }else{
-            dispatch({
-                type: ERROR, payload: error.message
-    
-            })
-        }
-        
+        console.log(type, error)
+        dispatch({
+            type: ERROR, payload: error.message
+
+        })
+
+
     }
 }
 
 
-export const addItem = (json, server, session_token, type) => async (dispatch) => {
+export const addItem = (json, server, session_token, type, app_token, val) => async (dispatch) => {
     try {
-      const URL = server + '/apirest.php/' + type;
+        const URL = server + '/apirest.php/' + type;
 
-      var config = {
-        method: 'post',
-        url:  URL,
-        headers: { 
-          'Session-Token':  `${session_token.session_token}`,
-          'App-Token': '8HLily4SwCo3yJv3NI3nTwowB3EFhAMuL9itKPQB', 
-          'Content-Type': 'application/json'
-        },
-        data : json
-      };
-      
+        let config;
+        if (val) {
+            config = {
+                method: 'post',
+                url: URL,
+                headers: {
+                    'Session-Token': `${session_token.session_token}`,
+                    'App-Token': `${app_token}`,
+                    'Content-Type': 'application/json'
+                },
+                data: json
+            };
+
+        } else {
+            config = {
+                method: 'post',
+                url: URL,
+                headers: {
+                    'Session-Token': `${session_token.session_token}`,
+                    'Content-Type': 'application/json'
+                },
+                data: json
+            };
+        }
+
         const res = await axios(config)
-        
-        
+
+
         if (res.status == 201) {
             dispatch({ type: MSJ, payload: 'Peticion creada' })
         }
     } catch (error) {
-        
-            dispatch({
-                type: ERROR, payload: error.message
-    
-            })
-        
-       
+
+        dispatch({
+            type: ERROR, payload: error.message
+
+        })
+
+
     }
 }
 
-export const killsession =(session_token,server)=>async(dispatch)=>{
+export const killsession = (session_token, server, app_token, val) => async (dispatch) => {
     try {
-        const URL = server + '/apirest.php/killSession' ;
-        const res = await axios.get(URL, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Session-Token': `${session_token.session_token}`,
-                'App-Token': '8HLily4SwCo3yJv3NI3nTwowB3EFhAMuL9itKPQB'
-            }
-        })
-        if(res.status==200){
-            dispatch({type:KILLSESION,payload:null})
+        const URL = server + '/apirest.php/killSession';
+        let res;
+        if (val) {
+            res = await axios.get(URL, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Session-Token': `${session_token.session_token}`,
+                    'App-Token': `${app_token}`
+                }
+            })
+        } else {
+            res = await axios.get(URL, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Session-Token': `${session_token.session_token}`,
+                }
+            })
+        }
+
+        if (res.status == 200) {
+            dispatch({ type: KILLSESION, payload: null })
         }
     } catch (error) {
 
@@ -476,5 +615,54 @@ export const killsession =(session_token,server)=>async(dispatch)=>{
             type: ERROR, payload: 'Error al cerrar sesión'
 
         })
+    }
+}
+
+export const getSubItem = (server, session_token,type, app_token, val) => async (dispatch) => {
+
+    try {
+        let res;
+        if (val) {
+            res = await axios.get(server, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Session-Token': `${session_token.session_token}`,
+                    'App-Token': `${app_token}`
+                }
+            })
+        } else {
+            res = await axios.get(server, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Session-Token': `${session_token.session_token}`
+                }
+            })
+        }
+        console.log(type,res.status)
+        if (res.status == 200) {
+            if(type=='TicketTask'){
+                dispatch({type:TICKETTASK,payload:res.data})
+            }else if(type=='TicketValidation'){
+                dispatch({type:TICKETVALIDATION,payload:res.data})
+
+            }else if(type=='TicketCost'){
+                dispatch({ type: TICKETCOST, payload: res.data })
+
+            }else if(type=='Problem_Ticket'){
+                dispatch({ type: PROBLEM_TICKET, payload: res.data })
+
+            }else if(type=='Change_Ticket'){
+                dispatch({ type: CHANGE_TICKET, payload: res.data })
+
+            }else if(type=='ITILSolution'){
+                dispatch({ type: ITILSOLUTION, payload: res.data })
+
+            }else if(type=='ITILFollowup'){
+                dispatch({ type: ITIlFOLLOWUP, payload: res.data })
+
+            }
+        }
+    } catch (error) {
+        console.log(type,error)
     }
 }

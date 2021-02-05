@@ -14,7 +14,7 @@ export const Peticiones = ({ navigation }) => {
     const [pri5, setPri5] = useState('black')
     const [pri6, setPri6] = useState('black')
     useEffect(() => {
-        console.log('ACTUALIZA PETICIONES')
+        console.log('ACTUALIZA PETICIONES',peticiones)
         if (peticiones) {
             setLoad(false)
             setPet(peticiones)
