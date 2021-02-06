@@ -92,8 +92,24 @@ export const Seguimiento = ({ route, navigation }) => {
                 </View>
                 <Text h4>Historial de acciones :</Text>
                 {
+                    validation.map((x,l)=>(
+                        <View key={l} style={{flexDirection:'column',backgroundColor:'#535353',padding:10,marginBottom:20}}>
+                        <Text style={{color:'gray'}}>{x.date_mod}</Text>
+                        <HTML source={{ html: decode(x.content) }} />
+                        </View> 
+                    ))
+                }
+                {
+                    followupS.map((x,l)=>(
+                        <View key={l} style={{flexDirection:'column',backgroundColor:'#E0E0E0',padding:10,marginBottom:20}}>
+                        <Text style={{color:'gray'}}>{x.date_mod}</Text>
+                        <HTML source={{ html: decode(x.content) }} />
+                        </View>
+                    ))
+                }
+                {
                     solutionS.map((x,l)=>(
-                        <View style={{flexDirection:'column',backgroundColor:'#9FD6ED',padding:10,marginBottom:20}}>
+                        <View key={l} style={{flexDirection:'column',backgroundColor:'#9FD6ED',padding:10,marginBottom:20}}>
                         <Text style={{color:'gray'}}>{x.date_mod}</Text>
                         <HTML source={{ html: decode(x.content) }} />
                         </View>
