@@ -2,6 +2,7 @@ import axios from 'axios';
 import base64 from 'react-native-base64'
 import * as FileSystem from 'expo-file-system'
 const init = {
+    //session
     session: {
         session_token: '',
         server: '',
@@ -20,6 +21,7 @@ const init = {
     config: {},
     countTicket: {},
 
+    //activos
     computer: {},
     monitor: {},
     networkE: {},
@@ -45,6 +47,8 @@ const init = {
     app_token: '',
     msj: '',
     val: null,
+    
+    //dropdown
     category: [],
     state: [],
     user: [],
@@ -52,6 +56,7 @@ const init = {
     supplier: [],
     RequestType: [],
     Location: [],
+    taskCategory:[],
 
     //ticket subitem
     ticketValidation: {},
@@ -60,10 +65,16 @@ const init = {
     change_ticket: {},
     solution: {},
     followup: {},
-    ticketTask:{}
+    ticketTask:{},
+
+    //template
+    followupTemplates:[],
+    solutionTemplates:[],
+    taskTemplates:[],
+    documentCategory:[]
 
 }
-
+//sesion
 const INIT_SESSION = 'INIT_SESSION';
 const ERROR = 'ERROR';
 const GET_PROFILE = 'GET_PROFILE';
@@ -72,6 +83,8 @@ const PROFILE_PHOTO = 'PROFILE_PHOTO';
 const COUNT = 'COUNT';
 const KILLSESION = 'KILLSESION'
 
+
+//activos
 const COMPUTER = 'COMPUTER';
 const MONITOR = 'MONITOR';
 const NETWORKE = 'NETWORKE';
@@ -94,6 +107,7 @@ const LICENSES = 'LICENSES';
 const CERTIFICATES = 'CERTIFICATES';
 const CLUSTER = 'CLUSTER';
 
+//dropdown
 const LOCATION = 'LOCATION';
 const REQUESTTYPE = 'REQUESTTYPE';
 const SUPPLIER = 'SUPPLIER';
@@ -105,6 +119,14 @@ const MSJ = 'MSJ';
 const TICKET = 'TICKET';
 const VAL = 'VAL';
 const CONFIG = 'CONFIG';
+const TASKCATEGORY = 'TASKCATEGORY';
+
+//template
+const FOLLOWUPTEMPLATE = 'FOLLOWUPTEMPLATE';
+const SOLUTIONTEMPLATE = 'SOLUTIONTEMPLATE';
+const TASKTEMPLATE = 'TASKTEMPLATE';
+const DOCUMENTCATEGORY ='DOCUMENTCATEGORY';
+
 
 
 //ticket type
@@ -207,6 +229,16 @@ export const AppModule = (state = init, data) => {
             return {...state,ticketTask:data.payload}
         case ITIlFOLLOWUP:
             return { ...state, followup: data.payload }
+        case TASKCATEGORY:
+            return {...state,taskCategory:data.payload}
+        case FOLLOWUPTEMPLATE:
+            return {...state,followupTemplates:data.payload}
+        case SOLUTIONTEMPLATE:
+            return {...state,solutionTemplates:data.payload}
+        case DOCUMENTCATEGORY:
+            return {...state,documentCategory:data.payload}
+        case TASKTEMPLATE:
+            return {...state,taskTemplates:data.payload}
         case KILLSESION:
             return init;
         default:
@@ -285,7 +317,6 @@ export const initSession = (user, pass, server, app_token, val) => async (dispat
         }
         dispatch({ type: INIT_SESSION, payload: response })
     } catch (error) {
-        console.log(error)
         if (error.response.status == 401) {
             dispatch({
                 type: ERROR, payload: 'Usuario y/o contraseña incorrecta'
@@ -440,7 +471,6 @@ export const getPhotoProfile = (server, id, session_token, app_token, val) => as
 //obtiene un item
 export const getItem = (type, server, session_token, count, val, app_token, val1) => async (dispatch) => {
     try {
-        console.log(count)
         let URL;
         if (val) {
             URL = server + '/apirest.php/' + type + '/?range=0-' + count;
@@ -525,6 +555,16 @@ export const getItem = (type, server, session_token, count, val, app_token, val1
             dispatch({ type: REQUESTTYPE, payload: res.data })
         } else if (type == 'Location') {
             dispatch({ type: LOCATION, payload: res.data })
+        }else if(type=='DocumentCategory'){
+            dispatch({type:DOCUMENTCATEGORY,payload:res.data})
+        }else if(type=='ITILFollowupTemplate'){
+            dispatch({type:FOLLOWUPTEMPLATE,payload:res.data})
+        }else if(type=='SolutionTemplate'){
+            dispatch({type:SOLUTIONTEMPLATE,payload:res.data})
+        }else if(type=='TaskTemplate'){
+            dispatch({type:TASKTEMPLATE,payload:res.data})
+        }else if(type=='TaskCategory'){
+            dispatch({type:TASKCATEGORY,payload:res.data})
         }
 
     } catch (error) {

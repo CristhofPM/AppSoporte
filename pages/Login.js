@@ -10,10 +10,10 @@ export const Login = () => {
     const [user, setUser] = useState('');
     const [pass, setPass] = useState('');
     const [server, setServer] = useState('');
-    const [check,setCheck]=useState(false)
+    const [check, setCheck] = useState(false)
     const [load, setLoad] = useState(null);
-    const [app_token,setApp_token]=useState('')
-    
+    const [app_token, setApp_token] = useState('')
+
     const msj = useSelector((store) => store.app.error);
     const session_token = useSelector((store) => store.app.session.session_token)
     const dispatch = useDispatch()
@@ -31,11 +31,11 @@ export const Login = () => {
         }
 
 
-    },[user,pass,server,check,app_token])
+    }, [user, pass, server, check, app_token, msj])
     const sendData = () => {
         setLoad(true)
         if (user !== '' || !user && pass !== '' || !pass && server !== '' || !server) {
-            dispatch(initSession(user, pass, server,app_token,check))
+            dispatch(initSession(user, pass, server, app_token, check))
         } else {
             Alert.alert('Completa todos los campos')
 
@@ -68,20 +68,19 @@ export const Login = () => {
                     value={pass}
                     placeholder='Contraseña'
                 />
-                <View style={{flexDirection:'row'}}>
-                <CheckBox checked={check} onPress={()=>setCheck(!check)}>
+                <View style={{ flexDirection: 'row' }}>
+                    <CheckBox checked={check} onPress={() => setCheck(!check)}>
 
-                </CheckBox>
-                <Text>App Token</Text>
+                    </CheckBox>
+                    <Text>App Token</Text>
                 </View>
                 {
                     check ? <TextInput
-                    secureTextEntry={true}
-                    style={styles.input}
-                    onChangeText={text => setApp_token(text)}
-                    value={app_token}
-                    placeholder='App token'
-                />:null
+                        style={styles.input}
+                        onChangeText={text => setApp_token(text)}
+                        value={app_token}
+                        placeholder='App token'
+                    /> : null
                 }
                 <View style={styles.btn}>
                     <Button

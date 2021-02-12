@@ -14,6 +14,7 @@ const MyTheme = {
     headerStyle: {
         backgroundColor: '#9EC9F0'
     },
+    headerShown:false,
     headerTintColor: '#000000',
     headerTitleStyle: {
         fontWeight: 'bold',
@@ -50,7 +51,7 @@ export const Main = () => {
             {
                 !isAuth ? (
                     <Stack.Navigator initialRouteName='Login'>
-                            <Stack.Screen name='Login' component={Login} options={MyTheme}></Stack.Screen>
+                            <Stack.Screen name='Login'  component={Login} options={MyTheme}></Stack.Screen>
                     </Stack.Navigator>
 
                 ) : (

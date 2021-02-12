@@ -1,0 +1,790 @@
+[
+    {
+        "value": 0,
+        "label": "-----"
+    },
+    {
+        "value": 60,
+        "label": "0h01"
+    },
+    {
+        "value": 120,
+        "label": "0h02"
+    },
+    {
+        "value": 180,
+        "label": "0h03"
+    },
+    {
+        "value": 240,
+        "label": "0h04"
+    },
+    {
+        "value": 300,
+        "label": "0h05"
+    },
+    {
+        "value": 360,
+        "label": " 0h06"
+    },
+    {
+        "value": 420,
+        "label": "0h07"
+    },
+    {
+        "value": 480,
+        "label": "0h08"
+    },
+    {
+        "value": 540,
+        "label": "0h09"
+    },
+    {
+        "value": 600,
+        "label": "0h10"
+    },
+    {
+        "value": 900,
+        "label": "0h15"
+    },
+    {
+        "value": 1200,
+        "label": "0h20"
+    },
+    {
+        "value": 1500,
+        "label": "0h25"
+    },
+    {
+        "value": 1800,
+        "label": "0h30"
+    },
+    {
+        "value": 2100,
+        "label": "0h35"
+    },
+    {
+        "value": 2400,
+        "label": "0h40"
+    },
+    {
+        "value": 2700,
+        "label": "0h45"
+    },
+    {
+        "value": 3000,
+        "label": "0h50"
+    },
+    {
+        "value": 3300,
+        "label": "0h55"
+    },
+    {
+        "value": 3600,
+        "label": "1h00"
+    },
+    {
+        "value": 3900,
+        "label": "1h05"
+    },
+    {
+        "value": 4200,
+        "label": "1h10"
+    },
+    {
+        "value": 4500,
+        "label": "1h15"
+    },
+    {
+        "value": 4800,
+        "label": "1h20"
+    },
+    {
+        "value": 5100,
+        "label": "1h25"
+    },
+    {
+        "value": 5400,
+        "label": "1h30"
+    },
+    {
+        "value": 5700,
+        "label": "1h35"
+    },
+    {
+        "value": 6000,
+        "label": "1h40"
+    },
+    {
+        "value": 6300,
+        "label": "1h45"
+    },
+    {
+        "value": 6600,
+        "label": "1h50"
+    },
+    {
+        "value": 6900,
+        "label": "1h55"
+    },
+    {
+        "value": 7200,
+        "label": "2h00"
+    },
+    {
+        "value": 7500,
+        "label": "2h05"
+    },
+    {
+        "value": 7800,
+        "label": "2h10"
+    },
+    {
+        "value": 8100,
+        "label": "2h15"
+    },
+    {
+        "value": 8400,
+        "label": "2h20"
+    },
+    {
+        "value": 8700,
+        "label": "2h25"
+    },
+    {
+        "value": 9000,
+        "label": "2h30"
+    },
+    {
+        "value": 9300,
+        "label": "2h35"
+    },
+    {
+        "value": 9600,
+        "label": "2h40"
+    },
+    {
+        "value": 9900,
+        "label": "2h45"
+    },
+    {
+        "value": 10200,
+        "label": "2h50"
+    },
+    {
+        "value": 10500,
+        "label": "2h55"
+    },
+    {
+        "value": 10800,
+        "label": "3h00"
+    },
+    {
+        "value": 11100,
+        "label": "3h05"
+    },
+    {
+        "value": 11400,
+        "label": "3h10"
+    },
+    {
+        "value": 11700,
+        "label": "3h15"
+    },
+    {
+        "value": 12000,
+        "label": "3h20"
+    },
+    {
+        "value": 12300,
+        "label": "3h25"
+    },
+    {
+        "value": 12600,
+        "label": "3h30"
+    },
+    {
+        "value": 12900,
+        "label": "3h35"
+    },
+    {
+        "value": 13200,
+        "label": "3h40"
+    },
+    {
+        "value": 13500,
+        "label": "3h45"
+    },
+    {
+        "value": 13800,
+        "label": "3h50"
+    },
+    {
+        "value": 14100,
+        "label": "3h55"
+    },
+    {
+        "value": 14400,
+        "label": "4h00"
+    },
+    {
+        "value": 14700,
+        "label": "4h05"
+    },
+    {
+        "value": 15000,
+        "label": "4h10"
+    },
+    {
+        "value": 15300,
+        "label": "4h15"
+    },
+    {
+        "value": 15600,
+        "label": "4h20"
+    },
+    {
+        "value": 15900,
+        "label": "4h25"
+    },
+    {
+        "value": 16200,
+        "label": "4h30"
+    },
+    {
+        "value": 16500,
+        "label": "4h35"
+    },
+    {
+        "value": 16800,
+        "label": "4h40"
+    },
+    {
+        "value": 17100,
+        "label": "4h45"
+    },
+    {
+        "value": 17400,
+        "label": "4h50"
+    },
+    {
+        "value": 17700,
+        "label": "4h55"
+    },
+    {
+        "value": 18000,
+        "label": "5h00"
+    },
+    {
+        "value": 18300,
+        "label": "5h05"
+    },
+    {
+        "value": 18600,
+        "label": "5h10"
+    },
+    {
+        "value": 18900,
+        "label": "5h15"
+    },
+    {
+        "value": 19200,
+        "label": "5h20"
+    },
+    {
+        "value": 19500,
+        "label": "5h25"
+    },
+    {
+        "value": 19800,
+        "label": "5h30"
+    },
+    {
+        "value": 20100,
+        "label": "5h35"
+    },
+    {
+        "value": 20400,
+        "label": "5h40"
+    },
+    {
+        "value": 20700,
+        "label": "5h45"
+    },
+    {
+        "value": 21000,
+        "label": "5h50"
+    },
+    {
+        "value": 21300,
+        "label": "5h55"
+    },
+    {
+        "value": 21600,
+        "label": "6h00"
+    },
+    {
+        "value": 21900,
+        "label": "6h05"
+    },
+    {
+        "value": 22200,
+        "label": "6h10"
+    },
+    {
+        "value": 22500,
+        "label": "6h15"
+    },
+    {
+        "value": 22800,
+        "label": "6h20"
+    },
+    {
+        "value": 23100,
+        "label": "6h25"
+    },
+    {
+        "value": 23400,
+        "label": "6h30"
+    },
+    {
+        "value": 23700,
+        "label": "6h35"
+    },
+    {
+        "value": 24000,
+        "label": "6h40"
+    },
+    {
+        "value": 24300,
+        "label": "6h45"
+    },
+    {
+        "value": 24600,
+        "label": "6h50"
+    },
+    {
+        "value": 24900,
+        "label": "6h55"
+    },
+    {
+        "value": 25200,
+        "label": "7h00"
+    },
+    {
+        "value": 25500,
+        "label": "7h05"
+    },
+    {
+        "value": 25800,
+        "label": "7h10"
+    },
+    {
+        "value": 26100,
+        "label": "7h15"
+    },
+    {
+        "value": 26400,
+        "label": "7h20"
+    },
+    {
+        "value": 26700,
+        "label": "7h25"
+    },
+    {
+        "value": 27000,
+        "label": "7h30"
+    },
+    {
+        "value": 27300,
+        "label": "7h35"
+    },
+    {
+        "value": 27600,
+        "label": "7h40"
+    },
+    {
+        "value": 27900,
+        "label": "7h45"
+    },
+    {
+        "value": 28200,
+        "label": "7h50"
+    },
+    {
+        "value": 28500,
+        "label": "7h55"
+    },
+    {
+        "value": 28800,
+        "label": "8h00"
+    },
+    {
+        "value": 32400,
+        "label": "9h00"
+    },
+    {
+        "value": 36000,
+        "label": "10h00"
+    },
+    {
+        "value": 39600,
+        "label": "11h00"
+    },
+    {
+        "value": 43200,
+        "label": "12h00"
+    },
+    {
+        "value": 46800,
+        "label": "13h00"
+    },
+    {
+        "value": 50400,
+        "label": "14h00"
+    },
+    {
+        "value": 54000,
+        "label": "15h00"
+    },
+    {
+        "value": 57600,
+        "label": "16h00"
+    },
+    {
+        "value": 61200,
+        "label": "17h00"
+    },
+    {
+        "value": 64800,
+        "label": "18h00"
+    },
+    {
+        "value": 68400,
+        "label": "19h00"
+    },
+    {
+        "value": 72000,
+        "label": "20h00"
+    },
+    {
+        "value": 75600,
+        "label": "21h00"
+    },
+    {
+        "value": 79200,
+        "label": "22h00"
+    },
+    {
+        "value": 82800,
+        "label": "23h00"
+    },
+    {
+        "value": 86400,
+        "label": "24h00"
+    },
+    {
+        "value": 90000,
+        "label": "25h00"
+    },
+    {
+        "value": 93600,
+        "label": "26h00"
+    },
+    {
+        "value": 97200,
+        "label": "27h00"
+    },
+    {
+        "value": 100800,
+        "label": "28h00"
+    },
+    {
+        "value": 104400,
+        "label": "29h00"
+    },
+    {
+        "value": 108000,
+        "label": "30h00"
+    },
+    {
+        "value": 111600,
+        "label": "31h00"
+    },
+    {
+        "value": 115200,
+        "label": "32h00"
+    },
+    {
+        "value": 118800,
+        "label": "33h00"
+    },
+    {
+        "value": 122400,
+        "label": "34h00"
+    },
+    {
+        "value": 126000,
+        "label": "35h00"
+    },
+    {
+        "value": 129600,
+        "label": "36h00"
+    },
+    {
+        "value": 133200,
+        "label": "37h00"
+    },
+    {
+        "value": 136800,
+        "label": "38h00"
+    },
+    {
+        "value": 140400,
+        "label": "39h00"
+    },
+    {
+        "value": 144000,
+        "label": "40h00"
+    },
+    {
+        "value": 147600,
+        "label": "41h00"
+    },
+    {
+        "value": 151200,
+        "label": "42h00"
+    },
+    {
+        "value": 154800,
+        "label": "43h00"
+    },
+    {
+        "value": 158400,
+        "label": "44h00"
+    },
+    {
+        "value": 162000,
+        "label": "45h00"
+    },
+    {
+        "value": 165600,
+        "label": "46h00"
+    },
+    {
+        "value": 169200,
+        "label": "47h00"
+    },
+    {
+        "value": 172800,
+        "label": "48h00"
+    },
+    {
+        "value": 176400,
+        "label": "49h00"
+    },
+    {
+        "value": 180000,
+        "label": "50h00"
+    },
+    {
+        "value": 183600,
+        "label": "51h00"
+    },
+    {
+        "value": 187200,
+        "label": "52h00"
+    },
+    {
+        "value": 190800,
+        "label": "53h00"
+    },
+    {
+        "value": 194400,
+        "label": "54h00"
+    },
+    {
+        "value": 198000,
+        "label": "55h00"
+    },
+    {
+        "value": 201600,
+        "label": "56h00"
+    },
+    {
+        "value": 205200,
+        "label": "57h00"
+    },
+    {
+        "value": 208800,
+        "label": "58h00"
+    },
+    {
+        "value": 212400,
+        "label": "59h00"
+    },
+    {
+        "value": 216000,
+        "label": "60h00"
+    },
+    {
+        "value": 219600,
+        "label": "61h00"
+    },
+    {
+        "value": 223200,
+        "label": "62h00"
+    },
+    {
+        "value": 226800,
+        "label": "63h00"
+    },
+    {
+        "value": 230400,
+        "label": "64h00"
+    },
+    {
+        "value": 234000,
+        "label": "65h00"
+    },
+    {
+        "value": 237600,
+        "label": "66h00"
+    },
+    {
+        "value": 241200,
+        "label": "67h00"
+    },
+    {
+        "value": 244800,
+        "label": "68h00"
+    },
+    {
+        "value": 248400,
+        "label": "69h00"
+    },
+    {
+        "value": 252000,
+        "label": "70h00"
+    },
+    {
+        "value": 255600,
+        "label": "71h00"
+    },
+    {
+        "value": 259200,
+        "label": "72h00"
+    },
+    {
+        "value": 262800,
+        "label": "73h00"
+    },
+    {
+        "value": 266400,
+        "label": "74h00"
+    },
+    {
+        "value": 270000,
+        "label": "75h00"
+    },
+    {
+        "value": 273600,
+        "label": "76h00"
+    },
+    {
+        "value": 277200,
+        "label": "77h00"
+    },
+    {
+        "value": 280800,
+        "label": "78h00"
+    },
+    {
+        "value": 284400,
+        "label": "79h00"
+    },
+    {
+        "value": 288000,
+        "label": "80h00"
+    },
+    {
+        "value": 291600,
+        "label": "81h00"
+    },
+    {
+        "value": 295200,
+        "label": "82h00"
+    },
+    {
+        "value": 298800,
+        "label": "83h00"
+    },
+    {
+        "value": 302400,
+        "label": "84h00"
+    },
+    {
+        "value": 306000,
+        "label": "85h00"
+    },
+    {
+        "value": 309600,
+        "label": "86h00"
+    },
+    {
+        "value": 313200,
+        "label": "87h00"
+    },
+    {
+        "value": 316800,
+        "label": "88h00"
+    },
+    {
+        "value": 320400,
+        "label": "89h00"
+    },
+    {
+        "value": 324000,
+        "label": "90h00"
+    },
+    {
+        "value": 327600,
+        "label": "91h00"
+    },
+    {
+        "value": 331200,
+        "label": "92h00"
+    },
+    {
+        "value": 334800,
+        "label": "93h00"
+    },
+    {
+        "value": 338400,
+        "label": "94h00"
+    },
+    {
+        "value": 342000,
+        "label": "95h00"
+    },
+    {
+        "value": 345600,
+        "label": "96h00"
+    },
+    {
+        "value": 349200,
+        "label": "97h00"
+    },
+    {
+        "value": 352800,
+        "label": "98h00"
+    },
+    {
+        "value": 356400,
+        "label": "99h00"
+    },
+    {
+        "value": 360000,
+        "label": "100h00"
+    }
+]

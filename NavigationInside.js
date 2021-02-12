@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { DetallePeticion } from './pages/DetallePeticion'
 import { createStackNavigator } from '@react-navigation/stack';
 import { Peticiones } from './pages/Peticiones';
@@ -17,10 +17,15 @@ import {ProblemasPeticion} from './pages/Tickets/ProblemasPeticion'
 import {Cambios} from './pages/Tickets/Cambios'
 import {Historico} from './pages/Tickets/Historico'
 import {Todo} from './pages/Tickets/Todo'
+import { useSelector } from 'react-redux';
 const InicioStack = createStackNavigator();
 
 
 export const NavigationInside = () => {
+    const session= useSelector((store)=>store.app.fullsession)
+    useEffect(() => {
+        console.log(session)
+    }, [])
     return (
         <InicioStack.Navigator screenOptions={{headerShown:false}}  initialRouteName="Peticiones">
             <InicioStack.Screen name="Peticiones" component={Peticiones}/>

@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import { Inicio } from './pages/Inicio'
-import { Activos } from './pages/Activos';
 import { NavigationInside } from './NavigationInside';
 import { NuevaPeticion } from './pages/NuevaPeticion';
 import { Planificacion } from './pages/Planificacion';
@@ -29,7 +27,6 @@ export const InicioUsu = () => {
 
     const valTok = useSelector((store) => store.app.session.valTok)
     useEffect(() => {
-        console.log(countTicket)
         if (auth) {
             const getItemF = async () => {
                 if (profiles && countTicket) {
@@ -44,6 +41,11 @@ export const InicioUsu = () => {
                     dispatch(getItem('RequestType', server, auth, 0, false, token_app, valTok))
                     dispatch(getItem('Location', server, auth, 0, false, token_app, valTok))
                     dispatch(getItem('Ticket', server, auth, countTicket.totalcount, true, token_app, valTok))
+                    dispatch(getItem('DocumentCategory', server, auth, 0, false, token_app, valTok))
+                    dispatch(getItem('ITILFollowupTemplate', server, auth, 0, false, token_app, valTok))
+                    dispatch(getItem('SolutionTemplate', server, auth, 0, false, token_app, valTok))
+                    dispatch(getItem('TaskTemplate', server, auth, 0, false, token_app, valTok))
+                    dispatch(getItem('TaskCategory', server, auth, 0, false, token_app, valTok))
 
                 }
             }
@@ -56,7 +58,7 @@ export const InicioUsu = () => {
     }
 
     const cerrar = () => {
-        dispatch(killsession(auth, server))
+        dispatch(killsession(auth, server,valTok,token_app))
     }
     return (
         <>
