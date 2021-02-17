@@ -1,19 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { actions, RichEditor, RichToolbar } from 'react-native-pell-rich-editor';
 import { View, Text, Switch, KeyboardAvoidingView } from 'react-native';
-import { useSelector } from 'react-redux';
+import { useSelector,useDispatch } from 'react-redux';
 import { Icon, Button } from 'react-native-elements';
 import RNPickerSelect from 'react-native-picker-select';
 import actiontime from './actiontime.json';
 import * as DocumentPicker from 'expo-document-picker';
-
-export const FormTask = ({ richText }) => {
+import {addItem} from '../redux/app'
+export const FormTask = ({ richText ,id}) => {
     const actionC = actiontime;
     const taskCategory = useSelector((store) => store.app.taskCategory);
     const taskTemplates = useSelector((store) => store.app.taskTemplates);
     const user = useSelector((store) => store.app.user)
     const group = useSelector((store) => store.app.group)
+    const fullsession= useSelector((store)=>store.app.fullsession)
+    const session= useSelector((store)=>store.app.session)
 
+
+    //
+    const  dispatch = useDispatch()
     //items
     const [templates, setTemplates] = useState([{ label: 'Buscando...', value: 0 }])
     const [category, setCategory] = useState([{ label: 'Buscando...', value: 0 }])
@@ -28,6 +33,7 @@ export const FormTask = ({ richText }) => {
     const [actionTask, setActionTask] = useState('');
     const [userTaskTech, setUserTaskTech] = useState('')
     const [groupTask, setGroupTask] = useState('')
+    const [content,setContent]=useState('')
     const toggleSwitch = () => setIsEnabled(previousState => !previousState);
     useEffect(() => {
         if (actionC) {
@@ -88,17 +94,38 @@ export const FormTask = ({ richText }) => {
             }
         }
         json()
-    }, [taskTemplates, taskCategory, actiontime, user, group])
+    }, [taskTemplates, taskCategory, user, group,fullsession,session])
     const editorInitializedCallback = () => {
         richText.current?.registerToolbar(function (items) {
-            console.log(items)
         });
     }
     const OpenFileSystem = () => {
         const res = DocumentPicker.getDocumentAsync()
         res.then(r => {
-            console.log(r)
         })
+    }
+
+    const SendData = ()=>{
+        if(content!=='' && fullsession.glpiID!==undefined){
+            let raw = JSON.stringify({"input":{
+                "tickets_id": id,
+                "taskcategories_id": formCategory,
+                "users_id": fullsession.glpiID,
+                "users_id_editor": 0,
+                "content": content,
+                "is_private": isEnabled?1:0,
+                "actiontime": actionTask,
+                "begin": null,
+                "end": null,
+                "state": stateTask,
+                "users_id_tech": userTaskTech,
+                "groups_id_tech": groupTask,
+                "tasktemplates_id": formTemplate,
+                "sourceitems_id": 1
+        }})
+        dispatch(addItem(raw,session.server,session.session_token,'Ticket/'+id+'/TicketTask',session.app_token,session.valTok))
+        }
+      
     }
     return (
         <View style={{ flexDirection: 'column' }}>
@@ -288,14 +315,14 @@ export const FormTask = ({ richText }) => {
             <View style={{ marginBottom: 20 }}>
                 <RichEditor
                     ref={richText}
-                    onChange={t => console.log(t)}
+                    onChange={t =>setContent(t)}
                     style={{ height: 200, borderWidth: 1, borderRadius: 5 }}
                     editorInitializedCallback={editorInitializedCallback}
                 />
             </View>
             <View style={{ flexDirection: 'column' }}>
                 <Button title='Archivo(s) (20 MB máx.) ' buttonStyle={{backgroundColor:'gray'}} onPress={() => OpenFileSystem()}></Button>
-                <Button title='Guardar' buttonStyle={{marginTop:20}}></Button>
+                <Button title='Guardar' buttonStyle={{backgroundColor:'#FEDA90',marginTop:10}} onPress={()=>SendData()} ></Button>
 
             </View>
         </View>

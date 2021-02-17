@@ -22,10 +22,7 @@ const InicioStack = createStackNavigator();
 
 
 export const NavigationInside = () => {
-    const session= useSelector((store)=>store.app.fullsession)
-    useEffect(() => {
-        console.log(session)
-    }, [])
+  
     return (
         <InicioStack.Navigator screenOptions={{headerShown:false}}  initialRouteName="Peticiones">
             <InicioStack.Screen name="Peticiones" component={Peticiones}/>

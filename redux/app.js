@@ -47,7 +47,7 @@ const init = {
     app_token: '',
     msj: '',
     val: null,
-    
+
     //dropdown
     category: [],
     state: [],
@@ -56,7 +56,8 @@ const init = {
     supplier: [],
     RequestType: [],
     Location: [],
-    taskCategory:[],
+    taskCategory: [],
+    solutionTypes: [],
 
     //ticket subitem
     ticketValidation: {},
@@ -65,13 +66,14 @@ const init = {
     change_ticket: {},
     solution: {},
     followup: {},
-    ticketTask:{},
+    ticketTask: {},
+    document_item: [],
 
     //template
-    followupTemplates:[],
-    solutionTemplates:[],
-    taskTemplates:[],
-    documentCategory:[]
+    followupTemplates: [],
+    solutionTemplates: [],
+    taskTemplates: [],
+    documentCategory: []
 
 }
 //sesion
@@ -120,12 +122,13 @@ const TICKET = 'TICKET';
 const VAL = 'VAL';
 const CONFIG = 'CONFIG';
 const TASKCATEGORY = 'TASKCATEGORY';
+const SOLUTIONTYPE = 'SOLUTIONTYPE';
 
 //template
 const FOLLOWUPTEMPLATE = 'FOLLOWUPTEMPLATE';
 const SOLUTIONTEMPLATE = 'SOLUTIONTEMPLATE';
 const TASKTEMPLATE = 'TASKTEMPLATE';
-const DOCUMENTCATEGORY ='DOCUMENTCATEGORY';
+const DOCUMENTCATEGORY = 'DOCUMENTCATEGORY';
 
 
 
@@ -136,7 +139,8 @@ const PROBLEM_TICKET = 'PROBLEM_TICKET';
 const CHANGE_TICKET = 'CHANGE_TICKET';
 const ITILSOLUTION = 'ITILSOLUTION';
 const ITIlFOLLOWUP = 'ITIlFOLLOWUP';
-const TICKETTASK='TICKETTASK';
+const TICKETTASK = 'TICKETTASK';
+const DOCUMENT_ITEM = 'DOCUMENT_ITEM'
 export const AppModule = (state = init, data) => {
     switch (data.type) {
         case INIT_SESSION:
@@ -203,6 +207,8 @@ export const AppModule = (state = init, data) => {
             return { ...state, lines: data.payload }
         case DOMAINS:
             return { ...state, domains: data.payload }
+        case DOCUMENT_ITEM:
+            return { ...state, document_item: data.payload }
         case LICENSES:
             return { ...state, licenses: data.payload }
         case CERTIFICATES:
@@ -226,19 +232,21 @@ export const AppModule = (state = init, data) => {
         case ITILSOLUTION:
             return { ...state, solution: data.payload }
         case TICKETTASK:
-            return {...state,ticketTask:data.payload}
+            return { ...state, ticketTask: data.payload }
         case ITIlFOLLOWUP:
             return { ...state, followup: data.payload }
         case TASKCATEGORY:
-            return {...state,taskCategory:data.payload}
+            return { ...state, taskCategory: data.payload }
         case FOLLOWUPTEMPLATE:
-            return {...state,followupTemplates:data.payload}
+            return { ...state, followupTemplates: data.payload }
         case SOLUTIONTEMPLATE:
-            return {...state,solutionTemplates:data.payload}
+            return { ...state, solutionTemplates: data.payload }
         case DOCUMENTCATEGORY:
-            return {...state,documentCategory:data.payload}
+            return { ...state, documentCategory: data.payload }
         case TASKTEMPLATE:
-            return {...state,taskTemplates:data.payload}
+            return { ...state, taskTemplates: data.payload }
+        case SOLUTIONTYPE:
+            return { ...state, solutionTypes: data.payload }
         case KILLSESION:
             return init;
         default:
@@ -317,17 +325,12 @@ export const initSession = (user, pass, server, app_token, val) => async (dispat
         }
         dispatch({ type: INIT_SESSION, payload: response })
     } catch (error) {
-        if (error.response.status == 401) {
-            dispatch({
-                type: ERROR, payload: 'Usuario y/o contraseña incorrecta'
 
-            })
-        } else {
-            dispatch({
-                type: ERROR, payload: 'Error al conectar al servidor Inicio'
+        dispatch({
+            type: ERROR, payload: 'Error al conectar al servidor Inicio'
 
-            })
-        }
+        })
+
 
 
     }
@@ -555,16 +558,18 @@ export const getItem = (type, server, session_token, count, val, app_token, val1
             dispatch({ type: REQUESTTYPE, payload: res.data })
         } else if (type == 'Location') {
             dispatch({ type: LOCATION, payload: res.data })
-        }else if(type=='DocumentCategory'){
-            dispatch({type:DOCUMENTCATEGORY,payload:res.data})
-        }else if(type=='ITILFollowupTemplate'){
-            dispatch({type:FOLLOWUPTEMPLATE,payload:res.data})
-        }else if(type=='SolutionTemplate'){
-            dispatch({type:SOLUTIONTEMPLATE,payload:res.data})
-        }else if(type=='TaskTemplate'){
-            dispatch({type:TASKTEMPLATE,payload:res.data})
-        }else if(type=='TaskCategory'){
-            dispatch({type:TASKCATEGORY,payload:res.data})
+        } else if (type == 'DocumentCategory') {
+            dispatch({ type: DOCUMENTCATEGORY, payload: res.data })
+        } else if (type == 'ITILFollowupTemplate') {
+            dispatch({ type: FOLLOWUPTEMPLATE, payload: res.data })
+        } else if (type == 'SolutionTemplate') {
+            dispatch({ type: SOLUTIONTEMPLATE, payload: res.data })
+        } else if (type == 'TaskTemplate') {
+            dispatch({ type: TASKTEMPLATE, payload: res.data })
+        } else if (type == 'TaskCategory') {
+            dispatch({ type: TASKCATEGORY, payload: res.data })
+        } else if (type == 'SolutionType') {
+            dispatch({ type: SOLUTIONTYPE, payload: res.data })
         }
 
     } catch (error) {
@@ -610,12 +615,12 @@ export const addItem = (json, server, session_token, type, app_token, val) => as
 
         const res = await axios(config)
 
-
+        console.log(res.data)
         if (res.status == 201) {
             dispatch({ type: MSJ, payload: 'Peticion creada' })
         }
     } catch (error) {
-
+        console.log(type, error)
         dispatch({
             type: ERROR, payload: error.message
 
@@ -658,7 +663,7 @@ export const killsession = (session_token, server, app_token, val) => async (dis
     }
 }
 
-export const getSubItem = (server, session_token,type, app_token, val) => async (dispatch) => {
+export const getSubItem = (server, session_token, type, app_token, val) => async (dispatch) => {
 
     try {
         let res;
@@ -678,31 +683,84 @@ export const getSubItem = (server, session_token,type, app_token, val) => async 
                 }
             })
         }
-        console.log(type,res.status)
+        console.log(type, res.status)
         if (res.status == 200) {
-            if(type=='TicketTask'){
-                dispatch({type:TICKETTASK,payload:res.data})
-            }else if(type=='TicketValidation'){
-                dispatch({type:TICKETVALIDATION,payload:res.data})
+            if (type == 'TicketTask') {
+                dispatch({ type: TICKETTASK, payload: res.data })
+            } else if (type == 'TicketValidation') {
+                dispatch({ type: TICKETVALIDATION, payload: res.data })
 
-            }else if(type=='TicketCost'){
+            } else if (type == 'TicketCost') {
                 dispatch({ type: TICKETCOST, payload: res.data })
 
-            }else if(type=='Problem_Ticket'){
+            } else if (type == 'Problem_Ticket') {
                 dispatch({ type: PROBLEM_TICKET, payload: res.data })
 
-            }else if(type=='Change_Ticket'){
+            } else if (type == 'Change_Ticket') {
                 dispatch({ type: CHANGE_TICKET, payload: res.data })
 
-            }else if(type=='ITILSolution'){
+            } else if (type == 'ITILSolution') {
                 dispatch({ type: ITILSOLUTION, payload: res.data })
 
-            }else if(type=='ITILFollowup'){
+            } else if (type == 'ITILFollowup') {
                 dispatch({ type: ITIlFOLLOWUP, payload: res.data })
 
+            } else if (type == 'Document_Item') {
+                dispatch({ type: DOCUMENT_ITEM, payload: res.data })
             }
         }
     } catch (error) {
-        console.log(type,error)
+        console.log(type, error)
+    }
+}
+
+export const uploadFile = (file, uploadManifest, server, session_token, app_token, val) => async (dispatch) => {
+    try {
+        server = server + '/apirest.php/Document'
+        let options;
+        if (val) {
+            options = {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Session-Token': `${session_token.session_token}`,
+                    'App-Token': `${app_token}`
+                },
+                httpMethod: 'POST',
+                uploadType: FileSystem.FileSystemUploadType.MULTIPART,
+                parameters: {
+                    "uploadManifest": uploadManifest,
+                    "type": "application/json"
+                }
+            }
+        } else {
+            options = {
+                headers: {
+
+                    'Content-Type': 'multipart/form-data',
+                    'Session-Token': `${session_token.session_token}`
+                },
+                httpMethod: 'POST',
+                uploadType: FileSystem.FileSystemUploadType.MULTIPART,
+                parameters: {
+                    "uploadManifest": uploadManifest,
+                    "type": "application/json"
+                }
+            }
+        }
+        console.log(file.uri)
+        let res = FileSystem.uploadAsync(server, file.uri, options)
+        res.then(r => {
+            console.log(r)
+            if (r.status === 201 || r.status === 200) {
+                dispatch({ type: MSJ, payload: 'Elemento añadido correctamente' })
+            } else {
+                dispatch({ type: MSJ, payload: 'Error al subir elemento' })
+
+            }
+        })
+
+
+    } catch (error) {
+        console.log(error)
     }
 }

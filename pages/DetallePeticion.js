@@ -19,6 +19,7 @@ export const DetallePeticion = ({navigation,route}) => {
     
     const redirect=(t,route)=>{
         t.links.forEach(element => {
+            console.log(element)
             dispatch(getSubItem(element.href,session.session_token,element.rel,session.app_token,session.valTok))
 
         });

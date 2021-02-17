@@ -106,6 +106,7 @@ export const Peticiones = ({ navigation }) => {
                           })}>
                             <ListItem.Content>
                                 <ListItem.Title>{l.name}</ListItem.Title>
+                                <ListItem.Subtitle>{l.id}</ListItem.Subtitle>
                                 <ListItem.Subtitle>{l.time_to_resolve}</ListItem.Subtitle>
                                 {l.status !== null ? Icono(l.status) : <Text>Sin estado</Text>}
                             </ListItem.Content>

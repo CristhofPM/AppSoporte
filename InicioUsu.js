@@ -46,6 +46,7 @@ export const InicioUsu = () => {
                     dispatch(getItem('SolutionTemplate', server, auth, 0, false, token_app, valTok))
                     dispatch(getItem('TaskTemplate', server, auth, 0, false, token_app, valTok))
                     dispatch(getItem('TaskCategory', server, auth, 0, false, token_app, valTok))
+                    dispatch(getItem('SolutionType', server, auth, 0, false, token_app, valTok))
 
                 }
             }

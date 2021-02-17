@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { actions, RichEditor, RichToolbar } from 'react-native-pell-rich-editor'
-import { View, Text, KeyboardAvoidingView } from 'react-native'
+import { View, Text, KeyboardAvoidingView, Switch } from 'react-native'
 import { Button, Icon } from 'react-native-elements';
 import RNPickerSelect from 'react-native-picker-select';
-import { useSelector } from 'react-redux';
-
-export const FormFollowup = ({richText}) => {
+import { useSelector,useDispatch } from 'react-redux';
+import {addItem} from '../redux/app'
+export const FormFollowup = ({ richText, id }) => {
 
     const followupTemplates = useSelector((store) => store.app.followupTemplates)
     const RequestType = useSelector((store) => store.app.RequestType)
+    const session = useSelector((store) => store.app.session)
+    const fullsession= useSelector((store)=>store.app.fullsession)
+
     //items
     const [templates, setTemplates] = useState([{ label: 'sin datos', value: 0 }])
     const [requestType, setRequestType] = useState([{ label: 'sin datos', value: 0 }])
@@ -16,6 +19,11 @@ export const FormFollowup = ({richText}) => {
     const [description, setDescripcion] = useState('<div></div>')
     const [elementTemplate, setElementTemplate] = useState('')
     const [requestElement, setRequestElement] = useState('')
+    const [isEnabled, setIsEnabled] = useState(false);
+
+    const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+
+    const  dispatch = useDispatch()
     useEffect(() => {
         const jsonRead = async () => {
             let arrayTemplate = [];
@@ -43,10 +51,9 @@ export const FormFollowup = ({richText}) => {
         }
 
         jsonRead()
-    }, [followupTemplates, RequestType, description])
+    }, [followupTemplates, RequestType, description,session,fullsession])
     const editorInitializedCallback = () => {
         richText.current?.registerToolbar(function (items) {
-            console.log(items)
         });
     }
 
@@ -55,9 +62,27 @@ export const FormFollowup = ({richText}) => {
         const obj = templates.find(element => element.value == v)
         if (obj != undefined) {
             setDescripcion('<div>' + obj.label + '</div>')
-            console.log(description)
 
         }
+    }
+
+    const SendData = () => {
+        var f=new Date();
+        if(description!=''&& fullsession.glpiID!=undefined){
+            var raw = JSON.stringify({
+                "input": {
+                    "itemtype": "Ticket",
+                    "items_id": id,
+                    "date": `${f.getFullYear()}-${f.getMonth()+1}-${f.getDate()} ${f.getHours()}:${f.getMinutes()}:${f.getSeconds()}`,
+                    "users_id": fullsession.glpiID,
+                    "content": description,
+                    "is_private": isEnabled?1:0,
+                    "requesttypes_id": requestElement
+                }
+            })
+            dispatch(addItem(raw,session.server,session.session_token,'Ticket/'+id+'/ITILFollowup',session.app_token,session.valTok))
+        }
+        
     }
     return (
         <View style={{ flexDirection: 'column' }}>
@@ -114,7 +139,17 @@ export const FormFollowup = ({richText}) => {
                     items={requestType}
                     value={requestElement}
                 />
-
+                
+            </View>
+            <View style={{ flexDirection: 'row', padding: 10 }}>
+            <Icon type='font-awesome-5' color='gray' name='lock' style={{ paddingRight: 10 }}></Icon>
+                <Switch
+                    trackColor={{ false: "#767577", true: "#81b0ff" }}
+                    thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
+                    ios_backgroundColor="#3e3e3e"
+                    onValueChange={toggleSwitch}
+                    value={isEnabled}
+                />
             </View>
             <KeyboardAvoidingView key='followupEditor' behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
                 <RichToolbar
@@ -136,17 +171,17 @@ export const FormFollowup = ({richText}) => {
                     ]}
                 />
             </KeyboardAvoidingView>
-            <View style={{marginBottom:20}}>
-            <RichEditor
-                setContentHTML={description}
-                ref={richText}
-                onChange={t => console.log(t)}
-                style={{ height: 200, borderWidth: 1, borderRadius: 5 }}
-                editorInitializedCallback={editorInitializedCallback}
-            />
+            <View style={{ marginBottom: 20 }}>
+                <RichEditor
+                    setContentHTML={description}
+                    ref={richText}
+                    onChange={t => setDescripcion(t)}
+                    style={{ height: 200, borderWidth: 1, borderRadius: 5 }}
+                    editorInitializedCallback={editorInitializedCallback}
+                />
             </View>
-           
-            <Button title="Agregar" buttonStyle={{backgroundColor:'#FEDA90'}} ></Button>
+
+            <Button title="Agregar" buttonStyle={{ backgroundColor: '#FEDA90' }} onPress={()=>SendData()}></Button>
         </View>
     )
 }
