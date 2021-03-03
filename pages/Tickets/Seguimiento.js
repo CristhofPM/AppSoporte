@@ -231,12 +231,9 @@ export const Seguimiento = ({ route, navigation }) => {
                     }
                     {
                         doc.map((x, l) => (
-                            <>
-                                <Image style={{
-                                    width: 100,
-                                    height: 100,
-                                }} key={l} source={{ uri: session.server + '/' + x.filepath }}></Image>
-                            </>
+                            <HTML source={{ html: `<img src="${session.server}/front/document.send.php?docid=9&amp;tickets_id=5"></img>` }} />
+
+                            
                         ))
                     }
                     <View style={{ flexDirection: 'column', backgroundColor: '#B2E0B6', padding: 20 }}>
