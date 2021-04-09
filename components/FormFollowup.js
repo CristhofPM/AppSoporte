@@ -4,10 +4,10 @@ import { View, Text, KeyboardAvoidingView, Switch } from 'react-native'
 import { Button, Icon } from 'react-native-elements';
 import RNPickerSelect from 'react-native-picker-select';
 import { useSelector,useDispatch } from 'react-redux';
-import {addItem} from '../redux/app'
+import {itemForm,TICKET_FOLLOWUP} from '../redux/tickets'
 export const FormFollowup = ({ richText, id }) => {
 
-    const followupTemplates = useSelector((store) => store.app.followupTemplates)
+    const followupTemplates = useSelector((store) => store.ticket.Followuptemplate)
     const RequestType = useSelector((store) => store.app.RequestType)
     const session = useSelector((store) => store.app.session)
     const fullsession= useSelector((store)=>store.app.fullsession)
@@ -80,7 +80,7 @@ export const FormFollowup = ({ richText, id }) => {
                     "requesttypes_id": requestElement
                 }
             })
-            dispatch(addItem(raw,session.server,session.session_token,'Ticket/'+id+'/ITILFollowup',session.app_token,session.valTok))
+            dispatch(itemForm(raw,session.server,session.session_token,'Ticket/'+id+'/ITILFollowup',session.app_token,session.valTok,'post',TICKET_FOLLOWUP))
         }
         
     }

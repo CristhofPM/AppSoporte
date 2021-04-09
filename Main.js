@@ -29,7 +29,6 @@ export const Main = () => {
     const auth = useSelector((store) => store.app.session.session_token)
     const token_app = useSelector((store) => store.app.session.app_token)
     const valTok = useSelector((store) => store.app.session.valTok)
-
     const server = useSelector((store) => store.app.session.server)
 
     useEffect(() => {

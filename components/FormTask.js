@@ -6,11 +6,11 @@ import { Icon, Button } from 'react-native-elements';
 import RNPickerSelect from 'react-native-picker-select';
 import actiontime from './actiontime.json';
 import * as DocumentPicker from 'expo-document-picker';
-import {addItem} from '../redux/app'
+import {itemForm, TICKET_TASK} from '../redux/tickets'
 export const FormTask = ({ richText ,id}) => {
     const actionC = actiontime;
-    const taskCategory = useSelector((store) => store.app.taskCategory);
-    const taskTemplates = useSelector((store) => store.app.taskTemplates);
+    const taskCategory = useSelector((store) => store.ticket.taskCategory);
+    const taskTemplates = useSelector((store) => store.ticket.taskTemplate);
     const user = useSelector((store) => store.app.user)
     const group = useSelector((store) => store.app.group)
     const fullsession= useSelector((store)=>store.app.fullsession)
@@ -123,7 +123,7 @@ export const FormTask = ({ richText ,id}) => {
                 "tasktemplates_id": formTemplate,
                 "sourceitems_id": 1
         }})
-        dispatch(addItem(raw,session.server,session.session_token,'Ticket/'+id+'/TicketTask',session.app_token,session.valTok))
+        dispatch(itemForm(raw,session.server,session.session_token,'Ticket/'+id+'/TicketTask',session.app_token,session.valTok,'post',TICKET_TASK))
         }
       
     }

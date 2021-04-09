@@ -1,24 +1,32 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text ,KeyboardAvoidingView} from 'react-native';
-import { useSelector } from 'react-redux';
+import { View, Text, KeyboardAvoidingView } from 'react-native';
+import { useSelector, useDispatch } from 'react-redux';
 import RNPickerSelect from 'react-native-picker-select';
 import { actions, RichEditor, RichToolbar } from 'react-native-pell-rich-editor';
 import { Button } from 'react-native-elements';
+import {itemForm,TICKET_SOLUTION} from '../redux/tickets'
 
-export const FormSolution = ({richText}) => {
-    const { solutionTemplates, solutionTypes } = useSelector((store) => store.app);
+export const FormSolution = ({ richText, id }) => {
+    const { solutionTemplate, solutiontype } = useSelector((store) => store.ticket);
+    const name = useSelector((store) => store.app.fullsession)
+    const session= useSelector((store)=>store.app.session)
+
+    const  dispatch = useDispatch()
 
     //items
     const [templates, setTemplate] = useState([{ label: 'Buscando...', value: 0 }])
     const [solType, setSolType] = useState([{ label: 'Buscando...', value: 0 }])
     //form
     const [templateValue, setTemplateValue] = useState(0)
-    const [solTypeValue,setSolTypeValue]=useState(0)
+    const [solTypeValue, setSolTypeValue] = useState(0)
+    const [content, setContent] = useState('')
+
+    
     useEffect(() => {
         const json = async () => {
-            if (solutionTemplates != undefined) {
+            if (solutionTemplate != undefined) {
                 let arrayTemplates = []
-                solutionTemplates.forEach(element => {
+                solutionTemplate.forEach(element => {
                     const obj = {
                         label: element.name,
                         value: element.id,
@@ -28,13 +36,13 @@ export const FormSolution = ({richText}) => {
                 });
                 setTemplate(arrayTemplates)
             }
-            if(solutionTypes!=undefined){
-                let arraySolType=[]
-                solutionTypes.forEach(element => {
-                    const obj ={
-                        label:element.name,
-                        value:element.id,
-                        key:element.id
+            if (solutiontype != undefined) {
+                let arraySolType = []
+                solutiontype.forEach(element => {
+                    const obj = {
+                        label: element.name,
+                        value: element.id,
+                        key: element.id
                     }
                     arraySolType.push(obj)
                 });
@@ -42,10 +50,41 @@ export const FormSolution = ({richText}) => {
             }
         }
         json()
-    }, [solutionTemplates, solutionTypes])
+    }, [solutionTemplate, solutiontype, name, session])
+
+
     const editorInitializedCallback = () => {
         richText.current?.registerToolbar(function (items) {
         });
+    }
+
+    const SaveSolution = () => {
+        var f=new Date();
+
+        if (content !== '' && name.glpiID!==undefined) {
+            let raw = JSON.stringify({
+                "input": {
+                    "itemtype": "Ticket",
+                    "solutiontypes_id": 0,
+                    "solutiontype_name": null,
+                    "content": content,
+                    "date_creation": `${f.getFullYear()}-${f.getMonth() + 1}-${f.getDate()} ${f.getHours()}:${f.getMinutes()}:${f.getSeconds()}`,
+                    "date_mod": `${f.getFullYear()}-${f.getMonth() + 1}-${f.getDate()} ${f.getHours()}:${f.getMinutes()}:${f.getSeconds()}`,
+                    "date_approval": null,
+                    "users_id": name.glpiID,
+                    "user_name": null,
+                    "users_id_editor": 0,
+                    "users_id_approval": 0,
+                    "user_name_approval": null,
+                    "status": 2,
+                    "itilfollowups_id": null,
+                }
+            })
+            dispatch(itemForm(raw, session.server, session.session_token, 'Ticket/' + id + '/ITILSolution', session.app_token, session.valTok, 'post',TICKET_SOLUTION))
+
+        } else {
+
+        }
     }
     return (
         <View>
@@ -99,37 +138,36 @@ export const FormSolution = ({richText}) => {
                         value={solTypeValue}
                     />
                 </View>
-                <Text style={{padding:10}}>Descripción</Text>
+                <Text style={{ padding: 10 }}>Descripción</Text>
                 <KeyboardAvoidingView key='TaskEditor' behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-                <RichToolbar
-                    editor={richText}
-                    actions={[
-                        actions.undo,
-                        actions.redo,
-                        actions.setStrikethrough,
-                        actions.checkboxList,
-                        actions.insertOrderedList,
-                        actions.blockquote,
-                        actions.alignLeft,
-                        actions.alignCenter,
-                        actions.alignRight,
-                        actions.code,
-                        actions.line,
-                        actions.heading1,
-                        actions.heading4
-                    ]}
-                />
-            </KeyboardAvoidingView>
-            
-            <View style={{ marginBottom: 20,padding:10 }}>
-                <RichEditor
-                    ref={richText}
-                    onChange={t => console.log(t)}
-                    style={{ height: 200, borderWidth: 1, borderRadius: 5 }}
-                    editorInitializedCallback={editorInitializedCallback}
-                />
-            </View>
-            <Button title='Añadir' buttonStyle={{backgroundColor:'#FEDA90'}} ></Button>
+                    <RichToolbar
+                        editor={richText}
+                        actions={[
+                            actions.undo,
+                            actions.redo,
+                            actions.setStrikethrough,
+                            actions.checkboxList,
+                            actions.insertOrderedList,
+                            actions.blockquote,
+                            actions.alignLeft,
+                            actions.alignCenter,
+                            actions.alignRight,
+                            actions.code,
+                            actions.line,
+                            actions.heading1,
+                            actions.heading4
+                        ]}
+                    />
+                </KeyboardAvoidingView>
+                <View style={{ marginBottom: 20, padding: 10 }}>
+                    <RichEditor
+                        ref={richText}
+                        onChange={t => setContent(t)}
+                        style={{ height: 200, borderWidth: 1, borderRadius: 5 }}
+                        editorInitializedCallback={editorInitializedCallback}
+                    />
+                </View>
+                <Button title='Añadir' buttonStyle={{ backgroundColor: '#FEDA90' }} onPress={()=>SaveSolution()}></Button>
             </View>
         </View>
     )

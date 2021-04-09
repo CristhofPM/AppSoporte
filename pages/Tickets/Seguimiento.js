@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { View, Dimensions } from 'react-native';
+import { View, Dimensions, TextInput, Alert } from 'react-native';
 import { Button, Divider, Icon, Text } from 'react-native-elements';
 import { ScrollView } from 'react-native-gesture-handler';
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import HTML from 'react-native-render-html'
 import { decode } from 'html-encoder-decoder'
 import { FormFollowup } from '../../components/FormFollowup';
@@ -11,22 +11,28 @@ import { FormFile } from '../../components/FormFile';
 import { FormValidation } from '../../components/FormValidation'
 import { FormSolution } from '../../components/FormSolution'
 import { Image } from 'react-native';
+import { itemForm, TICKET_VALIDATION } from '../../redux/tickets'
+import { clearStatus } from '../../redux/tickets'
+import { Alerta } from '../../components/Alert';
+
 export const Seguimiento = ({ route, navigation }) => {
     const richText = React.createRef();
+    const dispatch = useDispatch()
 
     const { ticket } = route.params;
     const width = Dimensions.get('window').width / 2 - 10;
-    const { ticketValidation, ticketCost, problem_ticket, change_ticket, solution, followup, ticketTask, msj, document_item, session } = useSelector((store) => store.app)
+
+    const { session, user } = useSelector((store) => store.app)
+    const { ticketValidation, ticketSolution,
+        ticketFollowup, ticketTask, ticketDocumentItem, status
+    } = useSelector((store) => store.ticket)
 
     const [validation, setValidation] = useState([]);
-    const [cost, setCost] = useState([]);
-    const [problem, setProblem] = useState([]);
-    const [change, setChange] = useState([]);
     const [solutionS, setSolution] = useState([]);
     const [followupS, setFollowupS] = useState([]);
     const [task, setTask] = useState([]);
-    const [doc, setDocs] = useState([])
-
+    const [doc, setDocs] = useState([]);
+    const [users, setUsers] = useState([{ id: 0, user: 'Buscando' }]);
     const [visible, setVisible] = useState(false)
 
     //forms visible
@@ -36,36 +42,63 @@ export const Seguimiento = ({ route, navigation }) => {
     const [visibleSolution, setVisibleSolution] = useState(false)
     const [visibleAprobation, setVisibleAprobation] = useState(false)
 
-
-
+    //form validation
+    const [textObj, setTextObj] = useState([])
+    let arrayComment = []
     useEffect(() => {
+        if (status.cod) {
+            let title = ""
+            let texto = ""
+
+            if (status.cod == 200 || status.cod == 201) {
+                title = "Exitoso!"
+                texto = "Se agrego el item correctamente"
+            } else {
+                title = "Error"
+                texto = "se ha producido un error"
+            }
+            Alert.alert(title, texto, [
+                {
+                    text: "Aceptar",
+                    onPress: () => dispatch(clearStatus({ cod: null, type: null })),
+                    style: "cancel"
+                }
+            ])
+        }
         if (ticketValidation) {
             setValidation(ticketValidation)
         }
-        if (ticketCost) {
-            setCost(ticketCost)
+        if (ticketSolution) {
+            setSolution(ticketSolution)
         }
-        if (problem_ticket) {
-            setProblem(problem_ticket)
-        }
-        if (change_ticket) {
-            setChange(change_ticket)
-        }
-        if (solution) {
-            setSolution(solution)
-        }
-        if (followup) {
-            setFollowupS(followup)
+        if (ticketFollowup) {
+            setFollowupS(ticketFollowup)
         }
         if (ticketTask) {
             setTask(ticketTask)
         }
-        if (document_item) {
-            setDocs(document_item)
+        if (ticketDocumentItem) {
+            setDocs(ticketDocumentItem)
         }
-        console.log(msj)
+        const json = async () => {
+            let arrayFinal = []
+            if (user !== undefined) {
+                user.forEach(e => {
+                    const obj = {
+                        id: e.id,
+                        user: e.name
+                    }
+                    arrayFinal.push(obj);
+                });
 
-    }, [ticketValidation, ticketCost, problem_ticket, change_ticket, solution, followup, document_item, ticketTask, msj, session])
+            }
+            setUsers(arrayFinal)
+        }
+        json();
+
+    }, [
+        ticketValidation, ticketSolution,
+        ticketFollowup, ticketTask, ticketDocumentItem, session, user, status])
 
 
     const VisibleForm = (num) => {
@@ -109,7 +142,40 @@ export const Seguimiento = ({ route, navigation }) => {
                 break;
         }
     }
+    const getTextComent = (id, text) => {
+        let val = arrayComment.find(item => item.id == id)
+        if (val !== undefined) {
+            val.text = text;
 
+
+        } else {
+            arrayComment.push({ id: id, text: text })
+        }
+        setTextObj(arrayComment)
+    }
+    const saveValidateUpdate = (id_solution, id_ticket, status) => {
+        let text = textObj.find(item => item.id == id_solution)
+        var f = new Date();
+        console.log(id_solution)
+        if (text != undefined) {
+            let raw = JSON.stringify({
+                "input": {
+                    "tickets_id": id_ticket,
+                    "comment_validation": text.text,
+                    "status": status,
+                }
+            })
+            dispatch(itemForm(raw, session.server, session.session_token, 'Ticket/' + id_ticket + '/TicketValidation/' + id_solution, session.app_token, session.valTok, 'put', TICKET_VALIDATION))
+        } else {
+
+        }
+    }
+
+    const filterUsername = (id) => {
+        let name = ''
+        const u = users.find(item => item.id == id)
+        return u.user
+    }
     return (
         <View style={{ flexDirection: 'column', flex: 1, margin: 5 }}>
             <ScrollView>
@@ -169,7 +235,6 @@ export const Seguimiento = ({ route, navigation }) => {
                                     />
                                 </View>
                             </View>
-
                             <View style={{ flexDirection: 'column' }}>
                                 {
                                     visibleFollowup ? <FormFollowup richText={richText} id={ticket.id}></FormFollowup> : null
@@ -181,7 +246,7 @@ export const Seguimiento = ({ route, navigation }) => {
                                     visibleFile ? <FormFile id={ticket.id}></FormFile> : null
                                 }
                                 {
-                                    visibleAprobation ? <FormValidation></FormValidation> : null
+                                    visibleAprobation ? <FormValidation id={ticket.id}></FormValidation> : null
                                 }
                                 {
                                     visibleSolution ? <FormSolution richText={richText}></FormSolution> : null
@@ -194,12 +259,69 @@ export const Seguimiento = ({ route, navigation }) => {
                     <Divider></Divider>
                     <Text h4>Historial de acciones :</Text>
                     {
-                        validation.map((x, l) => (
-                            <View key={l} style={{ flexDirection: 'column', backgroundColor: '#535353', padding: 10, marginBottom: 20 }}>
-                                <Text style={{ color: 'gray' }}>{x.date_mod}</Text>
-                                <HTML source={{ html: decode(x.content) }} />
-                            </View>
-                        ))
+                        validation.map((x, l) => {
+
+                            if (x.status == 3 || x.status == 4) {
+                                return (
+                                    <View key={l}>
+
+                                        <View style={{ flexDirection: 'column', backgroundColor: `${x.status == 3 ? '#A1D7A2' : '#D3A4A4'}`, padding: 20 }}>
+                                            <Text>{`Respuesta de la petición de validación:  ${x.status == 3 ? 'Concedido' : 'Rechazado'}`}</Text>
+                                            {x.comment_validation ? <HTML source={{ html: decode(x.comment_validation) }} /> : null}
+                                        </View>
+                                        <View style={{ flexDirection: 'column', backgroundColor: 'white', padding: 10, marginBottom: 20 }}>
+                                            <Text>{`Petición de validación => ${users.find(item => item.id == x.users_id_validate).user}`}</Text>
+                                            {x.comment_submission ? <HTML source={{ html: decode(x.comment_submission) }} /> : null}
+                                        </View>
+                                    </View>
+                                )
+                            } else if (x.status == 2) {
+                                return (
+                                    <View key={l} style={{ flexDirection: 'column', backgroundColor: 'white', padding: 10, marginBottom: 20 }}>
+                                        <Text>{`Petición de validación => ${filterUsername(x.users_id_validate)}`}</Text>
+                                        <Text>{x.comment_submission}</Text>
+                                        <TextInput
+                                            style={{
+                                                borderWidth: 1,
+                                                borderColor: 'black',
+                                                borderRadius: 5,
+                                                color: 'black',
+                                                marginBottom: 10,
+                                                textAlignVertical: 'top',
+                                                padding: 10
+                                            }}
+                                            multiline={true}
+                                            onChangeText={t => getTextComent(x.id, t)}
+                                            numberOfLines={4} />
+                                        <View style={{ flexDirection: 'row', padding: 10 }}>
+                                            <Button
+                                                onPress={() => saveValidateUpdate(x.id, x.tickets_id, 3)}
+                                                title="Aprobar" titleStyle={{ color: '#425B64' }}
+                                                buttonStyle={{ backgroundColor: "#b6f47e" }}
+                                                icon={{ name: "thumbs-up", size: 15, color: "#535353", type: 'font-awesome-5' }}
+                                            >
+
+                                            </Button>
+                                            <Button
+                                                onPress={() => saveValidateUpdate(x.id, x.tickets_id, 4)}
+                                                title="Rechazar"
+                                                titleStyle={{ color: '#380b0b' }}
+                                                buttonStyle={{ backgroundColor: "#eba696" }}
+                                                containerStyle={{ paddingLeft: 10 }}
+                                                icon={{
+                                                    name: "thumbs-down", size: 15, color: "#380b0b",
+                                                    type: 'font-awesome-5'
+                                                }}
+                                            >
+
+                                            </Button>
+
+                                        </View>
+                                    </View>
+                                )
+                            }
+
+                        })
                     }
                     {
                         followupS.map((x, l) => (
@@ -208,7 +330,7 @@ export const Seguimiento = ({ route, navigation }) => {
                                     <Text style={{ color: 'gray' }}>{x.date_mod}</Text>
                                     {x.is_private == 1 ? <Icon type='font-awesome-5' name='lock' color='#D97E7E' ></Icon> : null}
                                 </View>
-                                <HTML source={{ html: decode(x.content) }} />
+                                {x.content ? <HTML source={{ html: decode(x.content) }} /> : null}
                             </View>
                         ))
                     }
@@ -216,7 +338,7 @@ export const Seguimiento = ({ route, navigation }) => {
                         solutionS.map((x, l) => (
                             <View key={l} style={{ flexDirection: 'column', backgroundColor: '#9FD6ED', padding: 10, marginBottom: 20 }}>
                                 <Text style={{ color: 'gray' }}>{x.date_mod}</Text>
-                                <HTML source={{ html: decode(x.content) }} />
+                                {x.content ? <HTML source={{ html: decode(x.content) }} /> : null}
                             </View>
                         ))
                     }
@@ -224,16 +346,24 @@ export const Seguimiento = ({ route, navigation }) => {
                         task.map((x, l) => (
 
                             <View key={l} style={{ flexDirection: 'column', backgroundColor: '#FEDA90', padding: 10, marginBottom: 20 }}>
-                                <Text style={{ color: 'gray' }}>{x.date_mod}</Text>
-                                <HTML source={{ html: decode(x.content) }} />
+                                <View style={{ flexDirection: 'row' }}>
+                                    <Text style={{ color: 'gray' }}>{x.date_mod}</Text>
+
+                                    {
+                                        x.is_private == 1 ? (
+                                            <Icon name='lock' type='font-awesome' color='#D97E7E' style={{ paddingLeft: 50 }}></Icon>
+
+                                        ) : (null)
+                                    }
+
+                                </View>
+                                {x.content ? <HTML source={{ html: decode(x.content) }} /> : null}
                             </View>
                         ))
                     }
                     {
                         doc.map((x, l) => (
-                            <HTML source={{ html: `<img src="${session.server}/front/document.send.php?docid=9&amp;tickets_id=5"></img>` }} />
-
-                            
+                            <HTML key={l} source={{ html: `<img src="${session.server}/front/document.send.php?docid=${x.documents_id}&amp;tickets_id=${x.id}"></img>` }} />
                         ))
                     }
                     <View style={{ flexDirection: 'column', backgroundColor: '#B2E0B6', padding: 20 }}>

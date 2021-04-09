@@ -4,13 +4,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import RNPickerSelect from 'react-native-picker-select';
 import { Button } from 'react-native-elements';
 import * as DocumentPicker from 'expo-document-picker';
-import { uploadFile, clearMsjG } from '../redux/app'
+import { uploadFile, clearMsjG } from '../redux/tickets'
 export const FormFile = ({id}) => {
     const dispatch = useDispatch()
     //store
     const document_category = useSelector((store) => store.app.documentCategory)
     const session = useSelector((store) => store.app.session)
-    const msj = useSelector((store) => store.app.msj);
     const fullsession= useSelector((store)=>store.app.fullsession)
 
     //items
@@ -20,15 +19,7 @@ export const FormFile = ({id}) => {
     const [fileName, setFileName] = useState({ name: '', size: 0 })
     const [file, setFile] = useState(null)
     useEffect(() => {
-        if (msj) {
-            Alert.alert('', msj, [
-                {
-                    text: "Ok",
-                    onPress: () => dispatch(clearMsjG()),
-                    style: "cancel"
-                }
-            ])
-        }
+        
         const json = async () => {
             if (document_category != undefined) {
                 let arrayDoc = []
@@ -44,7 +35,7 @@ export const FormFile = ({id}) => {
             }
         }
         json()
-    }, [document_category, session, msj])
+    }, [document_category, session])
 
     const OpenFileSystem = () => {
         const res = DocumentPicker.getDocumentAsync()

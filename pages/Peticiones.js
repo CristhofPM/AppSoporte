@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
 import { View, ScrollView, Text, ActivityIndicator } from "react-native"
-import { ListItem, Icon } from "react-native-elements"
+import { ListItem, Icon, SearchBar } from "react-native-elements"
 export const Peticiones = ({ navigation }) => {
-    const peticiones = useSelector((store) => store.app.ticket)
+    const peticiones = useSelector((store) => store.ticket.tickets)
     const config = useSelector((store) => store.app.config)
     const [load, setLoad] = useState(true)
     const [pet, setPet] = useState([])
@@ -13,6 +13,12 @@ export const Peticiones = ({ navigation }) => {
     const [pri4, setPri4] = useState('black')
     const [pri5, setPri5] = useState('black')
     const [pri6, setPri6] = useState('black')
+
+    const visible = useSelector((store) => store.app.valSearch)
+    const [search_visible, setSearchVisible] = useState(false);
+
+    const [text_search,setSearchText] = useState('');
+
     useEffect(() => {
         if (peticiones) {
             setLoad(false)
@@ -28,6 +34,9 @@ export const Peticiones = ({ navigation }) => {
                 setPri6(config.cfg_glpi.priority_6 || 'white')
             }
 
+        }
+        if (visible) {
+            setSearchVisible(visible)
         }
     }, [peticiones])
     const Icono = (estado) => {
@@ -93,6 +102,15 @@ export const Peticiones = ({ navigation }) => {
             </View>
         }
     }
+
+    const SearchFilter = (text)=>{
+        setSearchText(text)
+        const newData = peticiones.filter(function(item) { const itemData = item.name ? item.name.toUpperCase() :
+            ''.toUpperCase();
+            const textData = text.toUpperCase(); return itemData.indexOf(textData) > -1;
+            });
+            setPet(newData)
+    }
     return (
         <View style={{ flexDirection: 'column', flex: 1, backgroundColor: 'white' }}>
             <ScrollView style={{ padding: 20 }}>
@@ -100,10 +118,24 @@ export const Peticiones = ({ navigation }) => {
                     load ? (<ActivityIndicator size="large" color="#9EC9F0" />) : (null)
                 }
                 {
+                    search_visible ? (
+                        <SearchBar
+                            inputStyle={{  backgroundColor: 'white', fontSize: 15 }}
+                            containerStyle={{ backgroundColor: 'white' }}
+                            style={{ backgroundColor: 'white' }}
+                            inputContainerStyle={{ backgroundColor: 'white' }}
+                            placeholder="Type Here..."
+                            onChangeText={text=>SearchFilter(text)}
+                            value={text_search}
+                        />
+                    ) : (null)
+                }
+                {
+
                     pet.map((l, i) => (
                         <ListItem key={i} bottomDivider onPress={() => navigation.navigate('Detalle', {
-                            ticket:l
-                          })}>
+                            ticket: l
+                        })}>
                             <ListItem.Content>
                                 <ListItem.Title>{l.name}</ListItem.Title>
                                 <ListItem.Subtitle>{l.id}</ListItem.Subtitle>

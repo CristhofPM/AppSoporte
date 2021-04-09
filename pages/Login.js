@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, TextInput, Button, Alert, View, Text } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { clearMsj, initSession } from '../redux/app'
+import { clearStatus, initSession } from '../redux/app'
 import RNPickerSelect from 'react-native-picker-select';
 import { useNavigation } from '@react-navigation/native'
 import { CheckBox } from 'react-native-elements';
@@ -14,24 +14,34 @@ export const Login = () => {
     const [load, setLoad] = useState(null);
     const [app_token, setApp_token] = useState('')
 
-    const msj = useSelector((store) => store.app.error);
+    const status = useSelector((store) => store.app.status);
     const session_token = useSelector((store) => store.app.session.session_token)
     const dispatch = useDispatch()
 
     useEffect(() => {
-        if (msj) {
-            setLoad(false)
-            Alert.alert('Error', msj, [
-                {
-                    text: "Ok",
-                    onPress: () => dispatch(clearMsj()),
-                    style: "cancel"
+        if (status) {
+            console.log(status)
+            if (status !== 200 || status !== 0) {
+                let msj = "";
+                if (status == 400) {
+                    msj = "Usuario y/o contraseña Incorrecta"
+                } else {
+                    msj = "Error al conectar al servidor"
+
                 }
-            ])
+                setLoad(false)
+                Alert.alert('Error', msj, [
+                    {
+                        text: "Ok",
+                        onPress: () => dispatch(clearStatus(0)),
+                        style: "cancel"
+                    }
+                ])
+            }
         }
 
 
-    }, [user, pass, server, check, app_token, msj])
+    }, [user, pass, server, check, app_token, status])
     const sendData = () => {
         setLoad(true)
         if (user !== '' || !user && pass !== '' || !pass && server !== '' || !server) {
