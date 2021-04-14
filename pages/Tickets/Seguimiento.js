@@ -27,6 +27,7 @@ export const Seguimiento = ({ route, navigation }) => {
         ticketFollowup, ticketTask, ticketDocumentItem, status
     } = useSelector((store) => store.ticket)
 
+    const [sessionS,setSessionS] = useState({})
     const [validation, setValidation] = useState([]);
     const [solutionS, setSolution] = useState([]);
     const [followupS, setFollowupS] = useState([]);
@@ -46,6 +47,27 @@ export const Seguimiento = ({ route, navigation }) => {
     const [textObj, setTextObj] = useState([])
     let arrayComment = []
     useEffect(() => {
+        if(session){
+            let headers;
+            if(session.app_token!=""){
+                 headers = {
+                    'Content-Type': 'application/json',
+                    'Session-Token': `${session.session_token.session_token}`,
+                    'App-Token': `${session.app_token}`,
+                    'Accept': 'application/octet-stream'
+                }
+            }else{
+                 headers = {
+                    'Content-Type': 'application/json',
+                    'Session-Token': `${session.session_token.session_token}`,
+                    'Accept': 'application/octet-stream'
+
+    
+                }
+            }
+            setSessionS(headers)
+            console.log(session.server)
+        }
         if (status.cod) {
             let title = ""
             let texto = ""
@@ -363,7 +385,15 @@ export const Seguimiento = ({ route, navigation }) => {
                     }
                     {
                         doc.map((x, l) => (
-                            <HTML key={l} source={{ html: `<img src="${session.server}/front/document.send.php?docid=${x.documents_id}&amp;tickets_id=${x.id}"></img>` }} />
+                            <Image
+                                key={l}
+                                source={{
+                                    uri: `${session.server}/apirest.php/Document/${x.documents_id}`,
+                                    method: 'GET',
+                                    headers: sessionS,
+                                }}
+                                style={{width: 400, height: 400}}
+                            />
                         ))
                     }
                     <View style={{ flexDirection: 'column', backgroundColor: '#B2E0B6', padding: 20 }}>

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
 import { View, ScrollView, Text, ActivityIndicator } from "react-native"
 import { ListItem, Icon, SearchBar } from "react-native-elements"
+import { RefreshControl } from "react-native"
 export const Peticiones = ({ navigation }) => {
     const peticiones = useSelector((store) => store.ticket.tickets)
     const config = useSelector((store) => store.app.config)

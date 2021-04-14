@@ -25,12 +25,16 @@ export const DetallePeticion = ({ navigation, route }) => {
     { id: 12, title: 'Histórico', route: 'Histórico' }, { id: 13, title: 'Todo', route: 'Todo' }]
 
     const redirect = (t, route) => {
-        dispatch(getSubItemTicket(`${session.server}/apirest.php/Ticket/${t.id}/ITILFollowup/`, session.session_token, TICKET_FOLLOWUP, session.app_token, session.valTok))
-        dispatch(getSubItemTicket(`${session.server}/apirest.php/Ticket/${t.id}/TicketTask/`, session.session_token, TICKET_TASK, session.app_token, session.valTok))
-        dispatch(getSubItemTicket(`${session.server}/apirest.php/Ticket/${t.id}/Document_Item/`, session.session_token, TICKET_DOCUMENT_ITEM, session.app_token, session.valTok))
-        dispatch(getSubItemTicket(`${session.server}/apirest.php/Ticket/${t.id}/TicketValidation/`, session.session_token, TICKET_VALIDATION, session.app_token, session.valTok))
-        dispatch(getSubItemTicket(`${session.server}/apirest.php/Ticket/${t.id}/ITILSolution/`, session.session_token, TICKET_SOLUTION, session.app_token, session.valTok))
-
+        
+        const rest = async()=>{
+            dispatch(getSubItemTicket(`${session.server}/apirest.php/Ticket/${t.id}/ITILFollowup/`, session.session_token, TICKET_FOLLOWUP, session.app_token, session.valTok))
+            dispatch(getSubItemTicket(`${session.server}/apirest.php/Ticket/${t.id}/TicketTask/`, session.session_token, TICKET_TASK, session.app_token, session.valTok))
+            dispatch(getSubItemTicket(`${session.server}/apirest.php/Ticket/${t.id}/Document_Item/`, session.session_token, TICKET_DOCUMENT_ITEM, session.app_token, session.valTok))
+            dispatch(getSubItemTicket(`${session.server}/apirest.php/Ticket/${t.id}/TicketValidation/`, session.session_token, TICKET_VALIDATION, session.app_token, session.valTok))
+            dispatch(getSubItemTicket(`${session.server}/apirest.php/Ticket/${t.id}/ITILSolution/`, session.session_token, TICKET_SOLUTION, session.app_token, session.valTok))
+        }
+        rest()
+        console.log(t)
         navigation.navigate(route, {
             ticket: t
         })
